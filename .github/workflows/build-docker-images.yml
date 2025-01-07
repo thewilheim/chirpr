@@ -1,0 +1,23 @@
+name: Build docker images
+
+on: 
+  push:
+    branches: 
+      - main
+
+jobs:
+  publish_images:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: DockerHub login
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: build image
+        run: |
+          docker build ./api/ -t ${{ secrets.DOCKERHUB_USERNAME }}/chirpr:api-latest
+          docker build ./ui/ --build-arg VITE_HOST_URL=${{ secrets.API_URL }} --build-arg VITE_BLOB_URL=${{secrets.BLOB_URL}} -t ${{ secrets.DOCKERHUB_USERNAME }}/chirpr:ui-latest
+      - name: push image to docker
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/chirpr:api-latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/chirpr:ui-latest

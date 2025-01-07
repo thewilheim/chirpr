@@ -1,0 +1,14 @@
+{
+  "dotnet.defaultSolution": "api.sln",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "chirpr local",
+      "database": "chirpr-local",
+      "username": "WILLIAM.ABRAHAM"
+    }
+  ]
+}

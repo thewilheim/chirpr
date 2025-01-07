@@ -1,0 +1,64 @@
+services:
+  # # # ui:
+  # #   build:
+  # #     context: ./ui/
+  # #     args:
+  # #       - VITE_HOST_URL=${VITE_HOST_URL}
+  # #   environment:
+  # #       - VITE_HOST_URL=${VITE_HOST_URL}
+  # #       - NODE_ENV=development
+  # #   env_file:
+  # #     - .env
+  # #   ports:
+  # #     - 5173:5173
+  server:
+    build:
+      context: ./api/
+      target: development
+    hostname: localhost
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5042
+      - AppSettings__Frontend=localhost:5173
+      - AppSettings__Domain=localhost
+      - ConnectionStrings__DefaultConnection=Host=chirpr-postgres-1;Port=5432;Database=chirpr-local;Username=postgres;Password=example
+      - Jwt__Key="test1232131231231231231223131331"
+      - Jwt__Issuer="http://localhost:5042"
+      - Jwt__Audience="http://localhost:5173"
+      - Logging__LogLevel__Default=Warning
+      - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://chirpr-azure-blob-storage-1
+    ports:
+      - 5042:5042
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres:14
+    restart: always
+    hostname: localhost
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=chirpr-local
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  azure-blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    volumes:
+      - ./.containers/blob_storage/data:/data
+    ports:
+      - "10000:10000"
+    command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000 -l /data"
+volumes:
+  db: 

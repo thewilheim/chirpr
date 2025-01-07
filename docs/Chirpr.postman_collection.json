@@ -1,0 +1,597 @@
+{
+	"info": {
+		"_postman_id": "6b153178-6fa0-4d1a-a1af-1f275c31218f",
+		"name": "Chirpr",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24470668"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"string\",\n  \"first_name\": \"string4\",\n  \"last_name\": \"string4\",\n  \"email\": \"string\",\n  \"password\": \"string\",\n  \"profile_picture_url\": \"string\",\n  \"bio\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/User/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"User",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"string\",\n  \"email\": \"string\",\n  \"password\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/User/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"User",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/User/14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"User",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/User/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"User",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/User/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"User",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chirps",
+			"item": [
+				{
+					"name": "like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"chirp_id\":1,\n    \"user_id\":11\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/like",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unlike",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"chirp_id\":1,\n    \"user_id\":11\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/unlike",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"unlike"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create chirp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Test Chirp\",\n  \"media_url\": \"string\",\n  \"user_id\": 13,\n  \"parent_id\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all chirps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all chirps by user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/getAllByUserID/13",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"getAllByUserID",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get chirp by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete chirp",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get replies to chirp by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/1/replies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"1",
+								"replies"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Follow",
+			"item": [
+				{
+					"name": "unfollow",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"followerId\": 1,\n  \"followedId\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/Follower/unfollow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"Follower",
+								"unfollow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "follow",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"followerId\": 1,\n  \"followedId\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/Follower/follow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"Follower",
+								"follow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get followers by user id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/Follower/followers/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"Follower",
+								"followers",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get following by user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/Follower/following/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"Follower",
+								"following",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rechirps",
+			"item": [
+				{
+					"name": "get all rechirps by chirp id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/rechirps/getAllByChirpID/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"rechirps",
+								"getAllByChirpID",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create rechirp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"chirp_id\": 0,\n    \"user_id\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/rechirps/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"rechirps",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all rechirps by user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/rechirps/getAllByUserID/13",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"rechirps",
+								"getAllByUserID",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete rechirp",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"chirp_id\": 0,\n    \"user_id\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5042/api/v1/chirp/rechirps/remove",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5042",
+							"path": [
+								"api",
+								"v1",
+								"chirp",
+								"rechirps",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

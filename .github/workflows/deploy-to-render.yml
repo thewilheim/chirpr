@@ -1,0 +1,26 @@
+name: Deploy to render
+
+on:
+  workflow_run:
+    workflows: [ "Build docker images" ]
+    types:
+      - completed
+  workflow_dispatch:
+  
+jobs:
+    
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    
+    steps: 
+      - name: Deploy api
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+           service-id: ${{ secrets.RENDER_SERVICE_ID_API }}
+           api-key: ${{ secrets.RENDER_API_KEY }}
+      - name: Deploy frontend
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+           service-id: ${{ secrets.RENDER_SERVICE_ID_UI }}
+           api-key: ${{ secrets.RENDER_API_KEY }}
