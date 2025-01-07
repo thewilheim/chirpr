@@ -1,3 +1,4 @@
+
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
 
@@ -6,7 +7,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/thewilheim/chirpr">
-    <img src="https://github.com/user-attachments/assets/38239def-2bdf-4c05-bf9d-9bf22a012b14" alt="Logo" width="80" height="80">
+    <img src="https://github.com/user-attachments/assets/8b712af3-3b4b-4a58-8720-b63ddecca4fb" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Chirpr</h3>
@@ -41,7 +42,6 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -50,7 +50,8 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-![Screenshot 2025-01-08 at 10 12 44 AM](https://github.com/user-attachments/assets/cb9e9215-7364-480e-a9e1-0179ba056391)
+![Screenshot 2025-01-08 at 10 12 44 AM](https://github.com/user-attachments/assets/9004b016-3b70-46c5-88c1-7aae10c1fc7e)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -98,16 +99,6 @@ What you'll need to install before getting started.
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-### Top contributors:
-
-<a href="https://github.com/thewilheim/chirpr/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=thewilheim/chirpr" alt="contrib.rocks image" />
-</a>
 
 
 <!-- CONTACT -->
