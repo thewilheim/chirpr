@@ -2,11 +2,13 @@ import { useGetChirpsQuery } from "../../slices/chirpSlice.ts";
 import Chirp from "../../components/Chirp.tsx";
 import { IChirp } from "../../config/applicatonConfig.ts";
 import CreateChirp from "../../components/CreateChirp.tsx";
-import { isAuthenticted } from "../../utils/index.ts";
 import Loader from "../../components/Loader.tsx";
+import { useSelector } from "react-redux";
+import { selectCurrentToken } from "../../slices/apiSlice.ts";
 
 const ChirpFeed = () => {
   const { data: chirps, isLoading } = useGetChirpsQuery();
+  const isAuthenticted = useSelector(selectCurrentToken)
 
   return (
     <div className="md:p-6">
@@ -18,7 +20,7 @@ const ChirpFeed = () => {
           <p>Popular</p>
         </div>
       </div>
-      {isAuthenticted() && <CreateChirp parent_id={0} />}
+      {isAuthenticted && <CreateChirp parent_id={0} />}
       <section className="flex flex-col justify-center">
         {isLoading ? (
           <Loader />

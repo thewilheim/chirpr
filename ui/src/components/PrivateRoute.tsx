@@ -1,11 +1,12 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { authService } from "../utils/Auth/authService";
+import { useSelector } from "react-redux";
 
 const PrivateRoute = () => {
   const location = useLocation();
-  const isAuthenticated = authService.isAuthenticated();
 
-  if (!isAuthenticated) {
+  const { userToken } = useSelector(state => state.auth);
+
+  if (!userToken) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

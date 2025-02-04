@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.DTOs;
 using api.Models;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Services
@@ -17,5 +18,7 @@ namespace api.Services
 
         Task<int> DeleteUser(long id);
         Task<User?> UpdateUser(UserUpdateDTO updatedUser);
+        Task<object?> Refresh(RefreshRequest request);
+        Task<int?> Logout(string email); 
     }
 }

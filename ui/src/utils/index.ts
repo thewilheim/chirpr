@@ -27,7 +27,7 @@ export const isAuthenticted = () => {
     return !!authCookie;
 }
 
-export const handleFileUpload = async (file: File | null, setUploadProgress: (progress: number) => void) => {
+export const handleFileUpload = async (file: File | null ) => {
     if (!file) return;
     const formData = new FormData();
     formData.append("file", file);
@@ -39,13 +39,13 @@ export const handleFileUpload = async (file: File | null, setUploadProgress: (pr
           headers: {
             "Content-Type": "multipar/form-data",
           },
-          onUploadProgress: (processEvent) => {
-            const progress = Math.round(
-              //@ts-expect-error should be fine
-              (processEvent.loaded * 100) / processEvent?.total
-            );
-            setUploadProgress(progress);
-          },
+          // onUploadProgress: (processEvent) => {
+          //   const progress = Math.round(
+          //     //@ts-expect-error should be fine
+          //     (processEvent.loaded * 100) / processEvent?.total
+          //   );
+          //   setUploadProgress(progress);
+          // },
         }
       );
       if (!response) throw new Error("File upload failed");

@@ -1,10 +1,9 @@
 import { GiNestBirds } from "react-icons/gi";
-import { useAuth } from "../../utils/Auth/useAuth";
 import { FaEnvelope, FaRegNewspaper } from "react-icons/fa";
 import { formatViews} from "../../utils";
 import {  MdLogout, MdSettings } from "react-icons/md";
-import {  useSelector } from "react-redux";
-import { useGetSuggestedFollowersQuery} from "../../slices/userApiSlice";
+import {  useDispatch, useSelector } from "react-redux";
+import { useGetSuggestedFollowersQuery, useLogoutMutation} from "../../slices/userApiSlice";
 import { IConversation, IUser } from "../../config/applicatonConfig";
 import { FaCircleUser, FaRegMessage } from "react-icons/fa6";
 import FollowButton from "../../components/FollowButton";
@@ -12,6 +11,8 @@ import "../../index.css"
 import { useGetUserConversationsQuery } from "../../slices/messageSlice";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import ProfilePicture from "../../components/ProfilePicture";
+import { selectCurrentUser } from "../../slices/apiSlice";
+import { logout } from "../../slices/authSlice";
 
 function Homepage() {
   return (
@@ -63,8 +64,9 @@ function Homepage() {
 
 const Navigation = () => {
   const path = location.pathname;
-  const { logoutUser } = useAuth();
+  const [logoutUser] = useLogoutMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <nav className="my-8">
@@ -84,8 +86,9 @@ const Navigation = () => {
         <li className="li-style">
           <MdSettings className="mr-5" /> Settings
         </li>
-        <li className="li-style text-red-700 hover:bg-red-200" onClick={() => {
-          logoutUser()
+        <li className="li-style text-red-700 hover:bg-red-200" onClick={async () => {
+          await logoutUser("")
+          dispatch(logout())
         }}>
           <MdLogout className="mr-5 " /> Logout
         </li>
@@ -95,7 +98,8 @@ const Navigation = () => {
 };
 
 const UserProfileSnippit = () => {
-  const { user } = useAuth();
+  const user = useSelector(selectCurrentUser);
+  console.log(user)
   
   return (
     <div className="flex flex-col items-center text-center p-6">
@@ -168,7 +172,6 @@ const Messages = () => {
   const { data: conversations, isLoading } = useGetUserConversationsQuery('');
   const navigate = useNavigate();
   if(!conversations) return <>Test</>
-  console.log(conversations)
   return(
     <section className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Messages</h1>

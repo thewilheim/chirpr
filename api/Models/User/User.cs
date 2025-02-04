@@ -21,12 +21,30 @@ namespace api.Models
         public required string password { get; set; }
         public string? profile_picture_url { get; set; }
         public string? bio { get; set; }
-        public ICollection<Chirp>? Chirps {get; set;}
+        public Privacy_Type privacy { get; set; } = Privacy_Type.Public;
+
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiry { get; set; }
+        public ICollection<Chirp>? Chirps { get; set; }
         // Navigation property for the many-to-many relationship
         public ICollection<Follower>? Followers { get; set; }  // Users who are following this user
         public ICollection<Follower>? Following { get; set; }  // Users whom this user is following
         public ICollection<Rechirp>? Rechirps { get; set; }
-        public ICollection<Like>? Likes {get; set;}
+        public ICollection<Like>? Likes { get; set; }
         public DateTime createdAt { get; set; }
     };
+
+
+    public enum Privacy_Type
+    {
+        Private,
+        Public,
+        Friends
+    }
+
+    public class AuthTokens
+    {
+        public required string AccessToken { get; set; }
+        public required string RefreshToken { get; set; }
+    }
 }

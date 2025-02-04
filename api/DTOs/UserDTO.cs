@@ -9,6 +9,9 @@ namespace api.Models
         public required string email { get; set; }
         public string? profile_picture_url { get; set; }
         public string? bio { get; set; }
+        public int numberOfFollowers { get; set; }
+        public int numberOfFollowing { get; set; }
+        public string? RefreshToken { get; set; }
         public DateTime createdAt { get; set; }
     }
 }

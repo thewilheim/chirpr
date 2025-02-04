@@ -51,7 +51,6 @@ namespace api.Data
                 .RuleFor(u => u.username, f => f.Internet.UserName())
                 .RuleFor(u => u.email, (f, u) => f.Internet.Email(u.username))
                 .RuleFor(u => u.password, f => BCrypt.Net.BCrypt.HashPassword("123"))
-                .RuleFor(u => u.profile_picture_url, f => f.Internet.Avatar())
                 .RuleFor(u => u.bio, f => f.Internet.Random.Words())
                 .RuleFor(u => u.createdAt, f => f.Date.Past(2).ToUniversalTime());
 

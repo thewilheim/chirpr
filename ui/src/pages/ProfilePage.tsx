@@ -6,16 +6,19 @@ import Chirp from "../components/Chirp";
 import { useCreateConversationMutation } from "../slices/messageSlice";
 import { useSelector } from "react-redux";
 import { IUser } from "../config/applicatonConfig";
-import { authService } from "../utils/Auth/authService";
 import FollowButton from "../components/FollowButton";
-import { MdArrowBackIosNew } from "react-icons/md";
+import { MdArrowBackIosNew, MdEditSquare } from "react-icons/md";
+import { useState } from "react";
+import EditProfileModal from "../components/EditProfileModal";
 import ProfilePicture from "../components/ProfilePicture";
+import { selectCurrentToken } from "../slices/apiSlice";
 
 function ProfilePage() {
   const { id: user_id } = useParams();
   const [createConversation] = useCreateConversationMutation();
   const navigate = useNavigate();
   if (!user_id) throw console.error("no id found");
+  const [toggleEditModal, setToggleEditModal] = useState(false);
 
   const { userInfo } = useSelector(
     (state: { auth: { userInfo: IUser } }) => state.auth
@@ -26,7 +29,7 @@ function ProfilePage() {
     useGetChirpByUserIdQuery(user_id);
 
   const isSelf = userInfo ? userInfo.id === Number(user_id) : false;
-  const isAuthenticated = authService.isAuthenticated();
+  const isAuthenticated = useSelector(selectCurrentToken);
 
   const handleCreateConversation = async () => {
     const response = await createConversation({
@@ -37,6 +40,12 @@ function ProfilePage() {
     navigate(`/messages/${response.data.id}`);
   };
 
+  const handleEditModal = () => {
+    setToggleEditModal(!toggleEditModal)
+  }
+
+
+
   if (!user) return <>No user found</>;
 
   return (
@@ -45,6 +54,7 @@ function ProfilePage() {
         <>Loading user...</>
       ) : (
         <div className="flex flex-col">
+          {toggleEditModal && <EditProfileModal setToggleEditModal={setToggleEditModal}/>}
           <div className="h-44 lg:h-72 bg-chirpr-400 rounded-tl-2xl p-4">
             <button
               onClick={() => navigate(-1)}
@@ -53,12 +63,12 @@ function ProfilePage() {
               <MdArrowBackIosNew />
             </button>
           </div>
-          <div className="relative p-8">
-            <div className="absolute -top-12 left-6 rounded-full bg-chirpr-800 border-2 border-chirpr-800 border-b-2 border-b-black/0  overflow-clip">
-              <ProfilePicture profile_picture_url={user.profile_picture_url} editable={true} width={"w-[96px]"} height={"h-[96px]"} />
+          <div className="relative p-8  ">
+            <div className="absolute -top-12 left-6 rounded-full bg-chirpr-800 border-2 border-chirpr-800 border-b-2 border-b-black/0  overflow-clip w-28 h-28">
+              <ProfilePicture profile_picture_url={user.profile_picture_url} editable={false} width={"w-full"} height={"h-full"} />
             </div>
-            <div className="mt-8">
-              <div className="flex flex-row items-center gap-4">
+            <div className="mt-12">
+              <div className="flex flex-row justify-start items-center gap-4">
                 <h1 className="text-4xl">{user?.username}</h1>
                 {!isSelf && isAuthenticated && (
                   <button
@@ -74,6 +84,9 @@ function ProfilePage() {
                     style={"bg-chirpr-600 text-white px-4 py-2 rounded-lg "}
                   />
                 )}
+                {isSelf && isAuthenticated && (
+                  <MdEditSquare size={22} className="hover:cursor-pointer hover:text-blue-500" onClick={handleEditModal}/>
+                )}
               </div>
               <p className="my-2">@{user?.username}</p>
               <div className="flex flex-row justify-between w-60">
@@ -82,7 +95,7 @@ function ProfilePage() {
                 {/* Todo implement number of chirps */}
                 <p>{formatViews(chirps?.length || 0)} chirps</p>
               </div>
-              <p>{user?.bio}</p>
+              <p className="mt-4">{user?.bio}</p>
             </div>
           </div>
           <div className="p-8">

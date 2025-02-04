@@ -1,11 +1,11 @@
 import { ChangeEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { GiNestBirds } from "react-icons/gi";
-import { useAuth } from "../utils/Auth/useAuth";
 import { AccountInfoStage } from "../components/RegistrationStages/AccountInfo";
 import { DoneStage } from "../components/RegistrationStages/DoneStage";
 import { PersonalInfoStage } from "../components/RegistrationStages/PersonalInfo";
 import axios from "axios";
+import { useRegisterMutation } from "../slices/userApiSlice";
 
 export interface StageInfoProps {
   formData: {
@@ -52,7 +52,7 @@ function RegisterPage() {
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   console.log(uploadProgress)
-  const { register, loading } = useAuth();
+  const [register] = useRegisterMutation();
   const navigate = useNavigate();
 
   const steps = ["Personal Info", "Account Info", "Done!"];
@@ -226,10 +226,9 @@ function RegisterPage() {
               </button>
               <button
                 type="submit"
-                disabled={loading}
                 className="bg-chirpr-700 hover:bg-chirpr-800 px-4 py-2 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Processing...' : 'Next'}
+                {'Next'}
               </button>
             </div>
           )}

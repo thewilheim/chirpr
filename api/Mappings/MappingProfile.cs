@@ -12,9 +12,7 @@ namespace api.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<User, UserDTO>();
-            
-            CreateMap<User, UserWithFollowDataDTO>()
+            CreateMap<User, UserDTO>()
                 .ForMember(dest => dest.numberOfFollowers, opt => opt.MapFrom(src => src.Followers.Count))
                 .ForMember(dest => dest.numberOfFollowing, opt => opt.MapFrom(src => src.Following.Count));
 
@@ -24,16 +22,17 @@ namespace api.Mappings
                 .ForMember(dest => dest.numberOfRechirps, opt => opt.MapFrom(src => src.Rechirps.Count))
                 .ForMember(dest => dest.isFollowingUser, opt => opt.MapFrom<IsFollowingResolver>())
                 .ForMember(dest => dest.hasLikedChirp, opt => opt.MapFrom<HasLikedChirpResolver>());
+                
             CreateMap<Conversation, ConversationDTO>()
-                .ForMember(dest => dest.other_user, opt => opt.MapFrom((src, _, _, context) => 
-                    src.user_one_id == (long)context.Items["current_user_id"] 
-                        ? new UserDetailsSimpleDTO 
+                .ForMember(dest => dest.other_user, opt => opt.MapFrom((src, _, _, context) =>
+                    src.user_one_id == (long)context.Items["current_user_id"]
+                        ? new UserDetailsSimpleDTO
                         {
                             id = src.user_two.id,
                             username = src.user_two.username,
                             profile_picture_url = src.user_two.profile_picture_url
                         }
-                        : new UserDetailsSimpleDTO 
+                        : new UserDetailsSimpleDTO
                         {
                             id = src.user_one.id,
                             username = src.user_one.username,
@@ -59,7 +58,8 @@ namespace api.Mappings
             // Get the logged-in user ID from the HTTP context
             var currentUserEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email);
 
-            if(currentUserEmail == null){
+            if (currentUserEmail == null)
+            {
                 return false;
             }
 
@@ -91,7 +91,8 @@ namespace api.Mappings
             // Get the logged-in user ID from the HTTP context
             var currentUserEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email);
 
-            if(currentUserEmail == null){
+            if (currentUserEmail == null)
+            {
                 return false;
             }
 

@@ -16,6 +16,8 @@ namespace api.Models
         public long user_id { get; set; }
         public User? user {get; set;}
         public long parent_id { get; set; }
+        public Privacy_Type privacy { get; set; } = Privacy_Type.Public;
+        
         [JsonIgnore]
         public ICollection<Rechirp>? Rechirps { get; set; }
         [JsonIgnore]

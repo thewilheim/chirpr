@@ -8,12 +8,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import LikeButton from "./LikeButton";
 import ChirpOptionsMenu from "./ChirpOptionsMenu";
 import { useState } from "react";
-import { authService } from "../utils/Auth/authService";
-import { useAuth } from "../utils/Auth/useAuth";
 import ProfilePicture from "./ProfilePicture";
+import { useSelector } from "react-redux";
+import { selectCurrentToken, selectCurrentUser } from "../slices/apiSlice";
 
 function Chirp(props: { chirpData: IChirp }) {
-  const authenticated = authService.isAuthenticated();
+  const authenticated = useSelector(selectCurrentToken)
 
   const { chirpData } = props;
   const {
@@ -28,7 +28,7 @@ function Chirp(props: { chirpData: IChirp }) {
     hasLikedChirp,
   } = chirpData;
 
-  const {user: userInfo} = useAuth();
+  const {user: userInfo} = useSelector(selectCurrentUser)
   const isOwnPost = userInfo ? userInfo.id === user_id : false;
 
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ function Chirp(props: { chirpData: IChirp }) {
       </div>
       <p className="mb-4 ml-2 text-lg">{content ?? <TextPlaceholder />}</p>
       <div className="flex gap-4 flex-wrap overflow-clip">
-      {media_url && <img src={`${import.meta.env.VITE_BLOB_URL}${media_url}`} alt="" width={242} height={356} className=" rounded-2xl"/>}
+      {media_url && <img src={`${media_url}`} alt="" width={242} height={356} className=" rounded-2xl"/>}
       </div>
       <div className="flex flex-row mt-6">
         <p className="flex flex-row justify-center items-center align-middle">

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GiNestBirds } from "react-icons/gi";
-import { useAuth } from "../utils/Auth/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "../slices/authSlice";
+import { useLoginMutation } from "../slices/userApiSlice";
+import { selectCurrentToken } from "../slices/apiSlice";
 
 interface FormErrors {
   email?: string;
@@ -14,8 +17,10 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(selectCurrentToken);
 
-  const { login, error: authError, loading, isAuthenticated } = useAuth();
+  const [login] = useLoginMutation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -49,7 +54,11 @@ function LoginPage() {
       return;
     }
     try {
-      await login(email, password);
+      const response = await login({ email, password }).unwrap();
+      if (response) {
+        dispatch(setCredentials(response));
+      }
+      navigate('/');
     } catch (error) {
       console.log(error);
       setSubmitError(authError || 'An unexpected error occurred');
@@ -155,10 +164,9 @@ function LoginPage() {
             </button>
             <button
               type="submit"
-              disabled={loading}
               className="bg-chirpr-700 hover:bg-chirpr-800 focus:ring-4 focus:outline-none focus:ring-chirpr-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-chirpr-600 dark:hover:bg-chirpr-700 dark:focus:ring-chirpr-800 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing in...' : 'Submit'}
+              {'Submit'}
             </button>
           </div>
 

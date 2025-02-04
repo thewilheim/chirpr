@@ -12,6 +12,7 @@ namespace api.DTOs
         public long user_id { get; set; }
         public UserDTO user { get; set; }  // Map to UserDTO to exclude sensitive data
         public long parent_id { get; set; }
+        public int privacy { get; set; }
         [JsonIgnore]
         public ICollection<Rechirp>? Rechirps { get; set; }
         public int numberOfLikes { get; set; }

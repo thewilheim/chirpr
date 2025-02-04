@@ -5,8 +5,10 @@ using api.Models;
 using api.Services;
 using api.Swaggerhub;
 using AutoMapper;
+using Azure.Core;
 using IdentityApi;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
@@ -44,20 +46,7 @@ namespace api.Controllers
             {
                 var newUser = await _userService.RegisterAsync(user);
                 var token = _tokenGenerator.GenerateToken(user.email, user.id.ToString());
-
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = false,       // Prevent JavaScript from accessing the cookie
-                    Secure = true,        // Set to true in production with HTTPS
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    Path = "/",  // Make sure the cookie is set for the whole domain
-                    SameSite = SameSiteMode.None,
-                    Domain = _configuration["AppSettings:Domain"]
-
-                };
-
-                Response.Cookies.Append("AuthToken", token, cookieOptions);
-                return CreatedAtAction(nameof(GetById), new { id = user.id }, _mapper.Map<UserDTO>(newUser));
+                return Ok(new { user = _mapper.Map<UserDTO>(newUser), accessToken = token });
             }
             catch (System.Exception error)
             {
@@ -77,39 +66,23 @@ namespace api.Controllers
 
             var token = _tokenGenerator.GenerateToken(authenticatedUser.email, authenticatedUser.id.ToString());
 
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = false,       // Prevent JavaScript from accessing the cookie
-                Secure = true,        // Set to true in production with HTTPS
-                Expires = DateTime.UtcNow.AddHours(1),
-                Path = "/",  // Make sure the cookie is set for the whole domain
-                 SameSite = SameSiteMode.None,
-                Domain = _configuration["AppSettings:Domain"]
-            };
+            var mappedUser = _mapper.Map<UserDTO>(authenticatedUser);
 
-            Response.Cookies.Append("AuthToken", token, cookieOptions);
-
-            return Ok(_mapper.Map<UserDTO>(authenticatedUser));
+            return Ok(new { user = mappedUser, accessToken = token });
 
         }
 
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            var cookieOptions = new CookieOptions
+            var result = await _userService.Logout(User.Identity.Name);
+
+            if (result == null)
             {
-                HttpOnly = false,       
-                Secure = true,        
-                Expires = DateTime.UtcNow.AddDays(-1), // Set to past date to expire cookie
-                Path = "/",  
-                SameSite = SameSiteMode.None,
-                Domain = _configuration["AppSettings:Domain"]
-            };
+                return Unauthorized();
+            }
 
-            // Use Delete instead of Append with empty string
-            Response.Cookies.Delete("AuthToken", cookieOptions);
-
-            return Ok();
+            return Ok("logged out");
         }
 
         [Authorize]
@@ -125,7 +98,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetById(long id)
         {
             var user = await _userService.GetByIdAsync(id);
-            return Ok(_mapper.Map<UserWithFollowDataDTO>(user));
+            return Ok(_mapper.Map<UserDTO>(user));
         }
 
         [Authorize]
@@ -148,8 +121,17 @@ namespace api.Controllers
         public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO updatedUser)
         {
             var result = await _userService.UpdateUser(updatedUser);
-            if(result == null) return NotFound("User not found");
+            if (result == null) return NotFound("User not found");
             return Ok(_mapper.Map<UserDTO>(result));
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+        {
+            var result = await _userService.Refresh(request);
+
+            return Ok(result);
+
         }
 
     }

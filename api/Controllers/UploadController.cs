@@ -52,7 +52,9 @@ namespace api.Controllers
 
             Guid fileId = await _blobService.UploadAsync(stream, file.ContentType);
 
-            return Ok(new { FileName = file.FileName, FilePath = fileId });
+            var filePath = "http://localhost:10000/devstoreaccount1/images/" + fileId.ToString();
+
+            return Ok(new { FileName = file.FileName, FilePath =  filePath });
         }
 
     }

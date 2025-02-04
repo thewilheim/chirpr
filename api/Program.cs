@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using api.Data;
 using api.Hubs;
 using api.Mappings;
@@ -32,7 +33,7 @@ app.Run();
 /// <summary>
 /// Configures services for the application.
 /// </summary>
-async void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
     // Database context
     services.AddDbContext<AppDbContext>(options =>
@@ -40,7 +41,7 @@ async void ConfigureServices(IServiceCollection services, IConfiguration configu
 
     // Blob Storage
     services.AddSingleton(_ => new BlobServiceClient(configuration.GetConnectionString("BlobStorage")));
-    
+
     // Swagger (API documentation)
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(options =>
@@ -78,7 +79,7 @@ async void ConfigureServices(IServiceCollection services, IConfiguration configu
     // SignalR (real-time communication)
     services.AddSignalR();
 
-    // Authentication
+    // Authentication (Header-Based JWT)
     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -93,19 +94,6 @@ async void ConfigureServices(IServiceCollection services, IConfiguration configu
                 IssuerSigningKey = new SymmetricSecurityKey(
                     System.Text.Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
             };
-
-            // Extract JWT token from cookie
-            options.Events = new JwtBearerEvents
-            {
-                OnMessageReceived = context =>
-                {
-                    if (context.Request.Cookies.TryGetValue("AuthToken", out var token))
-                    {
-                        context.Token = token;
-                    }
-                    return Task.CompletedTask;
-                }
-            };
         });
 
     // Add controllers
@@ -118,7 +106,7 @@ async void ConfigureServices(IServiceCollection services, IConfiguration configu
 /// <summary>
 /// Configures middleware and the request pipeline.
 /// </summary>
-void ConfigureMiddleware(WebApplication app)
+async Task ConfigureMiddleware(WebApplication app)
 {
     // Use CORS
     app.UseCors("AllowFrontend");
@@ -133,6 +121,8 @@ void ConfigureMiddleware(WebApplication app)
         using var serviceScope = app.Services.CreateScope();
         var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
         dbContext.Database.Migrate();
+
+        // await DataSeeder.SeedTestData(app.Services, app.Configuration);
     }
 
     // Authentication and authorization

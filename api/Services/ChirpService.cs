@@ -46,7 +46,7 @@ namespace api.Services
 
         public async Task<IEnumerable<Chirp>> GetAllChirps()
         {
-            return await _context.Chirps.Where(c => c.parent_id == 0).Include(c => c.user).Include(r => r.Rechirps).Include(l => l.Likes).OrderByDescending(c => c.createdAt).ToListAsync();
+            return await _context.Chirps.Where(c => c.parent_id == 0).Include(c => c.user).Include(r => r.Rechirps).Include(l => l.Likes).Take(10).OrderByDescending(c => c.createdAt).ToListAsync();
         }
 
         public async Task<IEnumerable<Rechirp>> GetAllRechirpsByChirpID(long id)
