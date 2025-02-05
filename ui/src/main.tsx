@@ -8,15 +8,15 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Homepage from "./pages/Homepage/Homepage.tsx";
-import LoginPage from "./pages/LoginPage.tsx";
+import LoginPage from "./pages/Login/LoginPage.tsx";
 import App from "./App.tsx";
 import PrivateRoute from "./components/PrivateRoute.tsx";
 import { Provider } from "react-redux";
 import store from "./store.ts";
-import ChirpFeed from "./pages/Chirp/ChirpFeed.tsx";
-import ReplyingPage from "./pages/Chirp/ReplyingPage.tsx";
-import RegisterPage from "./pages/RegisterPage.tsx";
-import ProfilePage from "./pages/ProfilePage.tsx";
+import ChirpFeed from "./pages/Chirp/Feed.tsx";
+import ReplyingPage from "./pages/Chirp/Reply.tsx";
+import RegisterPage from "./pages/Register/RegisterPage.tsx";
+import ProfilePage from "./pages/Profile/ProfilePage.tsx";
 import ConversationsPage from "./pages/Messages/ConversationsPage.tsx";
 import { Chat } from "./components/Chat.tsx";
 

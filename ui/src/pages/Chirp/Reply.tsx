@@ -3,11 +3,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Chirp from '../../components/Chirp';
 import { IChirp } from '../../config/applicatonConfig';
 import CreateChirp from '../../components/CreateChirp';
-import { isAuthenticted } from '../../utils';
+import { useSelector } from 'react-redux';
+import { selectCurrentToken } from '../../slices/apiSlice';
 
 function ReplyingPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const isAuthenticated = useSelector(selectCurrentToken)
 
   const { data:chirpData, isLoading:loadingChirp } = useGetChirpByIdQuery(id || '');
   const { data: replyData, isLoading:loadingReplies} = useGetRepliesQuery(id || '');
@@ -25,7 +28,7 @@ function ReplyingPage() {
         </div>
       </div>
       <Chirp chirpData={chirpData} />
-      {isAuthenticted() && <CreateChirp parent_id={chirpData.id} userReplyingTo={chirpData?.user.username} />}
+      {isAuthenticated && <CreateChirp parent_id={chirpData.id} userReplyingTo={chirpData?.user.username} />}
       <section>
         {loadingReplies ? <>loading</> : (
           replyData.map((item: IChirp) => {

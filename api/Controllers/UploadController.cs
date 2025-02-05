@@ -22,6 +22,7 @@ namespace api.Controllers
             _blobService = blobService;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> Upload(IFormFile file)

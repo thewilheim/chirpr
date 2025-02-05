@@ -24,7 +24,7 @@ namespace api.Controllers
             _mapper = mapper;
         }
 
-
+        [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> CreateChirp ([FromBody] Chirp chirp)
         {
@@ -65,7 +65,7 @@ namespace api.Controllers
             return Ok(_mapper.Map<ChirpDTO>(chirps));
         }
 
-
+        [Authorize]
         [HttpPost("like")]
         public async Task<IActionResult> LikeChirp ([FromBody] Like like)
         {
@@ -74,6 +74,7 @@ namespace api.Controllers
             return Ok(like);
         }
 
+        [Authorize]
         [HttpDelete("unlike")]
         public async Task<IActionResult> UnlikeChirp ([FromBody] Like like)
         {
@@ -81,7 +82,7 @@ namespace api.Controllers
             return Ok(like);
         }
 
-
+        [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteChirp(long id)
         {
@@ -111,6 +112,7 @@ namespace api.Controllers
             return Ok(replies);
         }
 
+        [Authorize]
         [HttpPost("rechirps/create")]
         public async Task<IActionResult> CreateRechirp([FromBody] Rechirp rechirp)
         {
@@ -127,7 +129,8 @@ namespace api.Controllers
             var rechirps = await _chirpService.GetAllRechirpsByUser(id);
             return Ok(rechirps);
         }
-
+        
+        [Authorize]
         [HttpDelete("rechirps/remove")]
         public async Task<IActionResult> RemoveRechirp ([FromBody] Rechirp rechirp)
         {

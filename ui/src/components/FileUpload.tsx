@@ -1,7 +1,5 @@
 import { ChangeEvent, useEffect } from "react";
 
-
-
 interface IFileUpload {
     showImageUpload: boolean;
     setShowImageUpload: (boolean: boolean) => void;

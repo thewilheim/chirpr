@@ -27,7 +27,7 @@ export const isAuthenticted = () => {
     return !!authCookie;
 }
 
-export const handleFileUpload = async (file: File | null ) => {
+export const handleFileUpload = async (file: File | null, userToken?: string ) => {
     if (!file) return;
     const formData = new FormData();
     formData.append("file", file);
@@ -38,14 +38,9 @@ export const handleFileUpload = async (file: File | null ) => {
         {
           headers: {
             "Content-Type": "multipar/form-data",
+            Authorization: `Bearer ${userToken}`
           },
-          // onUploadProgress: (processEvent) => {
-          //   const progress = Math.round(
-          //     //@ts-expect-error should be fine
-          //     (processEvent.loaded * 100) / processEvent?.total
-          //   );
-          //   setUploadProgress(progress);
-          // },
+
         }
       );
       if (!response) throw new Error("File upload failed");

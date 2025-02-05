@@ -61,8 +61,9 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Chirp"],
     }),
     getUserDetails: builder.query({
-      query: (id) => ({
-        url: `${USERS_URL}/${id}`,
+      query: () => ({
+        url: `${USERS_URL}/profile`,
+        method: 'GET'
       }),
       keepUnusedDataFor: 5,
     }),

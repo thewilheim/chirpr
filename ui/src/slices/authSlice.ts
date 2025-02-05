@@ -1,44 +1,60 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { IUser } from "../config/applicatonConfig";
+import axios from "axios"; // For making API calls
+import { BASE_URL, USERS_URL } from "../constrants";
 
-// Load saved auth state from local storage
-const loadFromLocalStorage = () => {
+// Load token from localStorage on startup
+const loadTokenFromStorage = () => localStorage.getItem("userToken") || null;
+
+// Async thunk to fetch user details using token
+export const fetchUser = createAsyncThunk("auth/fetchUser", async (_, { getState, rejectWithValue }) => {
   try {
-    const userInfo = localStorage.getItem("userInfo");
-    const userToken = localStorage.getItem("userToken");
-    return {
-      userInfo: userInfo ? JSON.parse(userInfo) : null,
-      userToken: userToken || null,
-    };
-  } catch (error) {
-    console.error("Error loading from local storage", error);
-    return { userInfo: null, userToken: null };
-  }
-};
+    const { auth } = getState() as { auth: { userToken: string | null } };
+    if (!auth.userToken) return rejectWithValue("No token found");
 
-const initialState: { userInfo: IUser | null; userToken: string | null } = loadFromLocalStorage();
+    const response = await axios.get(`${BASE_URL}${USERS_URL}/profile`, {
+      headers: { Authorization: `Bearer ${auth.userToken}` },
+    });
+    return response.data; // The user data
+  } catch (error) {
+    return rejectWithValue(error.response?.data || "Failed to fetch user");
+  }
+});
+
+const initialState: { userInfo: IUser | null; userToken: string | null } = {
+  userInfo: null,
+  userToken: loadTokenFromStorage(),
+};
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     setCredentials: (state, action: PayloadAction<{ user: IUser; accessToken: string }>) => {
-      const { user, accessToken } = action.payload;
-      state.userInfo = user;
-      state.userToken = accessToken;
+      state.userInfo = action.payload.user;
+      state.userToken = action.payload.accessToken;
 
-      // Save to local storage
-      localStorage.setItem("userInfo", JSON.stringify(user));
-      localStorage.setItem("userToken", accessToken);
+      // Store token in localStorage
+      localStorage.setItem("userToken", action.payload.accessToken);
     },
     logout: (state) => {
       state.userInfo = null;
       state.userToken = null;
 
-      // Remove from local storage
-      localStorage.removeItem("userInfo");
+      // Remove token from localStorage
       localStorage.removeItem("userToken");
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.userInfo = action.payload;
+      })
+      .addCase(fetchUser.rejected, (state) => {
+        state.userInfo = null;
+        state.userToken = null;
+        localStorage.removeItem("userToken"); // Remove invalid token
+      });
   },
 });
 

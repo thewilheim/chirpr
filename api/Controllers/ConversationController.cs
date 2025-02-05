@@ -6,6 +6,7 @@ using api.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using api.Models.Conversations;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
@@ -29,6 +30,7 @@ namespace api.Controllers
             _hubContext = hubContext;
         }
 
+        [Authorize]
         [HttpGet("")]
         public async Task<IActionResult> GetUserConversations()
         {
@@ -40,7 +42,8 @@ namespace api.Controllers
             var conversations = await _conversationService.GetAllConversationsByUser(long.Parse(user_id));
             return Ok(conversations);
         }
-
+        
+        [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> CreateConversation([FromBody] Conversation conversation)
         {

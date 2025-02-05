@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.SignalR;
 using api.Models.Message;
 using api.Hubs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
@@ -33,7 +34,8 @@ namespace api.Controllers
             _conversationService = conversationService;
             _hubContext = hubContext;
         }
-
+        
+        [Authorize]
         [HttpGet("conversation/{conversationId}")]
         public async Task<IActionResult> GetMessagesByConversation(long conversationId)
         {
@@ -41,6 +43,7 @@ namespace api.Controllers
             return Ok(messages);
         }
 
+        [Authorize]
         [HttpPost("send")]
         public async Task<IActionResult> SendMessage([FromBody] Message message)
         {

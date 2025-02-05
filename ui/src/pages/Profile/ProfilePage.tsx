@@ -1,17 +1,17 @@
-import { formatViews } from "../utils";
+import { formatViews } from "../../utils";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetProfileQuery } from "../slices/userApiSlice";
-import { useGetChirpByUserIdQuery } from "../slices/chirpSlice";
-import Chirp from "../components/Chirp";
-import { useCreateConversationMutation } from "../slices/messageSlice";
+import { useGetProfileQuery } from "../../slices/userApiSlice";
+import { useGetChirpByUserIdQuery } from "../../slices/chirpSlice";
+import Chirp from "../../components/Chirp";
+import { useCreateConversationMutation } from "../../slices/messageSlice";
 import { useSelector } from "react-redux";
-import { IUser } from "../config/applicatonConfig";
-import FollowButton from "../components/FollowButton";
+import { IUser } from "../../config/applicatonConfig";
+import FollowButton from "../../components/FollowButton";
 import { MdArrowBackIosNew, MdEditSquare } from "react-icons/md";
 import { useState } from "react";
-import EditProfileModal from "../components/EditProfileModal";
-import ProfilePicture from "../components/ProfilePicture";
-import { selectCurrentToken } from "../slices/apiSlice";
+import EditProfileModal from "../../components/EditProfileModal";
+import ProfilePicture from "../../components/ProfilePicture";
+import { selectCurrentToken } from "../../slices/apiSlice";
 
 function ProfilePage() {
   const { id: user_id } = useParams();
@@ -41,10 +41,8 @@ function ProfilePage() {
   };
 
   const handleEditModal = () => {
-    setToggleEditModal(!toggleEditModal)
-  }
-
-
+    setToggleEditModal(!toggleEditModal);
+  };
 
   if (!user) return <>No user found</>;
 
@@ -54,7 +52,9 @@ function ProfilePage() {
         <>Loading user...</>
       ) : (
         <div className="flex flex-col">
-          {toggleEditModal && <EditProfileModal setToggleEditModal={setToggleEditModal}/>}
+          {toggleEditModal && (
+            <EditProfileModal setToggleEditModal={setToggleEditModal} />
+          )}
           <div className="h-44 lg:h-72 bg-chirpr-400 rounded-tl-2xl p-4">
             <button
               onClick={() => navigate(-1)}
@@ -65,7 +65,12 @@ function ProfilePage() {
           </div>
           <div className="relative p-8  ">
             <div className="absolute -top-12 left-6 rounded-full bg-chirpr-800 border-2 border-chirpr-800 border-b-2 border-b-black/0  overflow-clip w-28 h-28">
-              <ProfilePicture profile_picture_url={user.profile_picture_url} editable={false} width={"w-full"} height={"h-full"} />
+              <ProfilePicture
+                profile_picture_url={user.profile_picture_url}
+                editable={false}
+                width={"w-full"}
+                height={"h-full"}
+              />
             </div>
             <div className="mt-12">
               <div className="flex flex-row justify-start items-center gap-4">
@@ -85,7 +90,11 @@ function ProfilePage() {
                   />
                 )}
                 {isSelf && isAuthenticated && (
-                  <MdEditSquare size={22} className="hover:cursor-pointer hover:text-blue-500" onClick={handleEditModal}/>
+                  <MdEditSquare
+                    size={22}
+                    className="hover:cursor-pointer hover:text-blue-500"
+                    onClick={handleEditModal}
+                  />
                 )}
               </div>
               <p className="my-2">@{user?.username}</p>

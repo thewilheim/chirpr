@@ -6,6 +6,7 @@ import { IChirpSend, IUser } from "../config/applicatonConfig";
 import { useSelector } from "react-redux";
 import FileUpload from "./FileUpload";
 import { handleFileUpload } from "../utils";
+import { selectCurrentToken } from "../slices/apiSlice";
 
 function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
   const imageRef = createRef<HTMLImageElement>();
@@ -17,13 +18,14 @@ function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
   );
   const [content, setContent] = useState("");
   const [create] = useCreateChirpMutation();
+  const token = useSelector(selectCurrentToken);
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     let response;
     try {
       if (file) {
-        response = await handleFileUpload(file);
+        response = await handleFileUpload(file, token);
       }
       await create({
         content: parent_id ? `@${userReplyingTo} ${content}` : content,

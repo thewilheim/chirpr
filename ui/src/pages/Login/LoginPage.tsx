@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GiNestBirds } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
-import { setCredentials } from "../slices/authSlice";
-import { useLoginMutation } from "../slices/userApiSlice";
-import { selectCurrentToken } from "../slices/apiSlice";
+import { setCredentials } from "../../slices/authSlice";
+import { useLoginMutation } from "../../slices/userApiSlice";
+import { selectCurrentToken } from "../../slices/apiSlice";
 
 interface FormErrors {
   email?: string;
@@ -58,20 +58,20 @@ function LoginPage() {
       if (response) {
         dispatch(setCredentials(response));
       }
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.log(error);
-      setSubmitError(authError || 'An unexpected error occurred');
+      setSubmitError("An unexpected error occurred");
     }
   };
 
   // Clear specific error when user starts typing
   const handleInputChange = (field: keyof FormErrors, value: string) => {
-    setErrors(prev => ({ ...prev, [field]: undefined }));
+    setErrors((prev) => ({ ...prev, [field]: undefined }));
     setSubmitError(null);
-    
-    if (field === 'email') setEmail(value);
-    if (field === 'password') setPassword(value);
+
+    if (field === "email") setEmail(value);
+    if (field === "password") setPassword(value);
   };
 
   useEffect(() => {
@@ -97,14 +97,12 @@ function LoginPage() {
         </p>
       </div>
 
-      <div className="h-1/2 bg-chirpr-300 w-[1px] rounded-lg">
-
-      </div>
+      <div className="h-1/2 bg-chirpr-300 w-[1px] rounded-lg"></div>
 
       {/* Right Section */}
       <div className="w-full md:w-1/2 flex flex-col pl-16">
         <GiNestBirds size={64} className="mb-8 text-chirpr-100" />
-        
+
         {submitError && (
           <div className="mb-4 p-3 bg-red-500/10 border border-red-500 rounded-lg text-red-500">
             {submitError}
@@ -124,9 +122,9 @@ function LoginPage() {
               type="email"
               id="email"
               value={email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              onChange={(e) => handleInputChange("email", e.target.value)}
               className={`bg-chirpr-200 border ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+                errors.email ? "border-red-500" : "border-gray-300"
               } text-sm rounded-lg w-full p-2.5 dark:text-black focus:ring-chirpr-300`}
               placeholder="name@chirpr.com"
               required
@@ -136,16 +134,19 @@ function LoginPage() {
 
           {/* Password Input */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-2"
+            >
               Your Password
             </label>
             <input
               type="password"
               id="password"
               value={password}
-              onChange={(e) => handleInputChange('password', e.target.value)}
+              onChange={(e) => handleInputChange("password", e.target.value)}
               className={`bg-chirpr-200 border ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
+                errors.password ? "border-red-500" : "border-gray-300"
               } text-sm rounded-lg w-full p-2.5 dark:text-black focus:ring-chirpr-300`}
               placeholder="********"
               required
@@ -166,7 +167,7 @@ function LoginPage() {
               type="submit"
               className="bg-chirpr-700 hover:bg-chirpr-800 focus:ring-4 focus:outline-none focus:ring-chirpr-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-chirpr-600 dark:hover:bg-chirpr-700 dark:focus:ring-chirpr-800 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {'Submit'}
+              {"Submit"}
             </button>
           </div>
 

@@ -1,20 +1,26 @@
 import { GiNestBirds } from "react-icons/gi";
 import { FaEnvelope, FaRegNewspaper } from "react-icons/fa";
-import { formatViews} from "../../utils";
-import {  MdLogout, MdSettings } from "react-icons/md";
-import {  useDispatch, useSelector } from "react-redux";
-import { useGetSuggestedFollowersQuery, useLogoutMutation} from "../../slices/userApiSlice";
+import { formatViews } from "../../utils";
+import { MdLogout, MdSettings } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useGetSuggestedFollowersQuery,
+  useLogoutMutation,
+} from "../../slices/userApiSlice";
 import { IConversation, IUser } from "../../config/applicatonConfig";
 import { FaCircleUser, FaRegMessage } from "react-icons/fa6";
 import FollowButton from "../../components/FollowButton";
-import "../../index.css"
+import "../../index.css";
 import { useGetUserConversationsQuery } from "../../slices/messageSlice";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import ProfilePicture from "../../components/ProfilePicture";
-import { selectCurrentUser } from "../../slices/apiSlice";
 import { logout } from "../../slices/authSlice";
-
+import { RootState } from "../../store";
+import Loader from "../../components/Loader";
 function Homepage() {
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+
+  if(!userInfo) return <Loader />
   return (
     <>
       <main className="flex flex-row text-chirpr-200">
@@ -27,40 +33,18 @@ function Homepage() {
         </section>
         <section className="flex flex-row border-2 border-chirpr-200/20 rounded-3xl mx-8 w-full bg-chirpr-900/30">
           <article className="flex flex-col border-r-2 border-chirpr-200/20 min-w-[75%]">
-          <Outlet />
+            <Outlet />
           </article>
           <div className="w-full">
-          <Messages />
-          <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
-          <Terms />
+            <Messages />
+            <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
+            <Terms />
           </div>
         </section>
       </main>
     </>
   );
 }
-
-// const Stories = () => {
-//   const user_stories = ["Will", "Stefan", "Kate", "Jim", "Pam","Dwight"];
-//   return (
-//     <div className="flex flex-row justify-evenly items-center p-6">
-//       <div>
-//       <button className="w-16 h-16 rounded-full border-dashed border-chirpr-500 border">
-//         +
-//       </button>
-//       <p>Add story</p>
-//       </div>
-//       {user_stories.map((item) => {
-//         return (
-//           <div className="text-center">
-//             <FaCircleUser size={60} />
-//             {item}
-//           </div>
-//         );
-//       })}
-//     </div>
-//   );
-// };
 
 const Navigation = () => {
   const path = location.pathname;
@@ -73,7 +57,7 @@ const Navigation = () => {
       <ul>
         <li
           className={`li-style ${path === "/" ? "li-active" : ""}`}
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
         >
           <FaRegNewspaper className="mr-5" /> Feed
         </li>
@@ -86,10 +70,13 @@ const Navigation = () => {
         <li className="li-style">
           <MdSettings className="mr-5" /> Settings
         </li>
-        <li className="li-style text-red-700 hover:bg-red-200" onClick={async () => {
-          await logoutUser("")
-          dispatch(logout())
-        }}>
+        <li
+          className="li-style text-red-700 hover:bg-red-200"
+          onClick={async () => {
+            await logoutUser("");
+            dispatch(logout());
+          }}
+        >
           <MdLogout className="mr-5 " /> Logout
         </li>
       </ul>
@@ -98,16 +85,21 @@ const Navigation = () => {
 };
 
 const UserProfileSnippit = () => {
-  const user = useSelector(selectCurrentUser);
+  const { userInfo:user } = useSelector((state: RootState) => state.auth);
   console.log(user)
-  
+
   return (
     <div className="flex flex-col items-center text-center p-6">
       <h1 className="flex flex-row items-center text-2xl  mb-12">
         <GiNestBirds size={46} className="mr-2" />
         Chirpr
       </h1>
-      <ProfilePicture profile_picture_url={user.profile_picture_url} editable={true} width={"w-[96px]"} height={"h-[96px]"}  />
+      <ProfilePicture
+        profile_picture_url={user.profile_picture_url}
+        editable={true}
+        width={"w-[96px]"}
+        height={"h-[96px]"}
+      />
       <h2 className="text-xl tracking-wider">
         {user.first_name} {user.last_name}
       </h2>
@@ -119,11 +111,17 @@ const UserProfileSnippit = () => {
           Chirps
         </p>
         <p>
-          <strong className="text-chirpr-200">{formatViews(user.numberOfFollowing)}</strong> <br />
+          <strong className="text-chirpr-200">
+            {formatViews(user.numberOfFollowing)}
+          </strong>{" "}
+          <br />
           Following
         </p>
         <p>
-          <strong className="text-chirpr-200">{formatViews(user.numberOfFollowers)}</strong> <br />
+          <strong className="text-chirpr-200">
+            {formatViews(user.numberOfFollowers)}
+          </strong>{" "}
+          <br />
           Followers
         </p>
       </div>
@@ -169,28 +167,37 @@ const Suggestions = () => {
 };
 
 const Messages = () => {
-  const { data: conversations, isLoading } = useGetUserConversationsQuery('');
+  const { data: conversations, isLoading } = useGetUserConversationsQuery("");
   const navigate = useNavigate();
-  if(!conversations) return <>Test</>
-  return(
+  if (!conversations) return <>Test</>;
+  return (
     <section className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Messages</h1>
       <div>
-        {!isLoading && conversations.length > 0 ? conversations.map((convo: IConversation) => {
-          return(
-            <div className="flex flex-row items-center justify-between hover:bg-chirpr-700 p-2 rounded">
-              <div className="flex flex-row items-center gap-4 cursor-pointer" onClick={() => navigate(`/messages/${convo.id}`)}>
-              <FaCircleUser size={44} />
-              <p>{convo.other_user.username}</p>
+        {!isLoading && conversations.length > 0 ? (
+          conversations.map((convo: IConversation) => {
+            return (
+              <div className="flex flex-row items-center justify-between hover:bg-chirpr-700 p-2 rounded">
+                <div
+                  className="flex flex-row items-center gap-4 cursor-pointer"
+                  onClick={() => navigate(`/messages/${convo.id}`)}
+                >
+                  <FaCircleUser size={44} />
+                  <p>{convo.other_user.username}</p>
+                </div>
+                <Link to={`/messages/${convo.id}`}>
+                  <FaRegMessage />
+                </Link>
               </div>
-              <Link to={`/messages/${convo.id}`}><FaRegMessage /></Link>
-            </div>
-          )
-        }): <>No Messages yet</>}
+            );
+          })
+        ) : (
+          <>No Messages yet</>
+        )}
       </div>
     </section>
-  )
-}
+  );
+};
 
 const Terms = () => {
   return (
@@ -202,7 +209,7 @@ const Terms = () => {
       <p>Advertising</p>
       <p>Business Services</p>
     </div>
-  )
-}
+  );
+};
 
 export default Homepage;

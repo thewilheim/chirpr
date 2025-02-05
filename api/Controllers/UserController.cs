@@ -36,24 +36,24 @@ namespace api.Controllers
             _configuration = configuration;
         }
 
+        private string GetUserEmailFromClaim()
+        {
+            return User.Claims.FirstOrDefault(claim => claim.Type.Contains(ClaimTypes.Email)).Value;
+        }
+
 
         [HttpPost("register")]
-        [SwaggerRequestExample(typeof(User), typeof(UserRegisterExample))]
-        [ProducesResponseType(typeof(UserDTO), 201)]
         public async Task<IActionResult> Register([FromBody] User user)
         {
-            try
+            var newUser = await _userService.RegisterAsync(user);
+
+            if (newUser != null)
             {
-                var newUser = await _userService.RegisterAsync(user);
                 var token = _tokenGenerator.GenerateToken(user.email, user.id.ToString());
                 return Ok(new { user = _mapper.Map<UserDTO>(newUser), accessToken = token });
             }
-            catch (System.Exception error)
-            {
 
-                _logger.LogInformation(error.Message);
-                return BadRequest(error.Message);
-            }
+            return BadRequest();
         }
 
 
@@ -75,7 +75,8 @@ namespace api.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            var result = await _userService.Logout(User.Identity.Name);
+            var userEmail = GetUserEmailFromClaim();
+            var result = await _userService.Logout(userEmail);
 
             if (result == null)
             {
@@ -99,6 +100,20 @@ namespace api.Controllers
         {
             var user = await _userService.GetByIdAsync(id);
             return Ok(_mapper.Map<UserDTO>(user));
+        }
+
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var loggedInUserEmail = GetUserEmailFromClaim();
+            if (loggedInUserEmail != null)
+            {
+                var user = await _userService.Profile(loggedInUserEmail);
+                return Ok(_mapper.Map<UserDTO>(user));
+            }
+
+            return NotFound();
         }
 
         [Authorize]

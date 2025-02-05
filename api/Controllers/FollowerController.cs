@@ -2,6 +2,7 @@ using api.Data;
 using api.Models;
 using api.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ namespace api.Controllers
             _followerService = followerService;
         }
 
+        [Authorize]
         [HttpPost("follow")]
         public async Task<IActionResult> FollowUser([FromBody] Follower follower)
         {
@@ -28,7 +30,7 @@ namespace api.Controllers
              if(result == null) return BadRequest();
             return Ok(result);
         }
-
+        [Authorize]
         [HttpPost("unfollow")]
         public async Task<IActionResult> UnFollowUser([FromBody] Follower follower)
         {

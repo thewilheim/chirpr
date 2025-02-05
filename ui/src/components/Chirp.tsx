@@ -1,7 +1,6 @@
 import { IChirp } from "../config/applicatonConfig";
 import { FaComment, FaEye, FaHeart } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { TextPlaceholder } from "../utils/Skeletons";
 import { formatViews } from "../utils";
 import moment from "moment";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -71,7 +70,7 @@ function Chirp(props: { chirpData: IChirp }) {
           </button>
         )}
       </div>
-      <p className="mb-4 ml-2 text-lg">{content ?? <TextPlaceholder />}</p>
+      <p className="mb-4 ml-2 text-lg">{content}</p>
       <div className="flex gap-4 flex-wrap overflow-clip">
       {media_url && <img src={`${media_url}`} alt="" width={242} height={356} className=" rounded-2xl"/>}
       </div>

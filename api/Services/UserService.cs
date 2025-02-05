@@ -123,7 +123,7 @@ namespace api.Services
 
             await _context.SaveChangesAsync();
 
-            return new { user, accessToken = newAccessToken};
+            return new { user, accessToken = newAccessToken };
         }
 
         public async Task<int?> Logout(string email)
@@ -138,6 +138,16 @@ namespace api.Services
             await _context.SaveChangesAsync();
 
             return 1;
+        }
+
+        public async Task<User?> Profile(string email)
+        {
+            var user = await _context.Users.Include(u => u.Followers).Include(u => u.Following).FirstOrDefaultAsync(u => u.email == email);
+            if(user != null){
+                return user;
+            }
+
+            return null;
         }
     }
 }

@@ -45,5 +45,6 @@ namespace IdentityApi
             rng.GetBytes(randomBytes);
             return Convert.ToBase64String(randomBytes);
         }
+
     }
 }

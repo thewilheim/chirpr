@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useUpdateMutation } from "../slices/userApiSlice";
 import { handleFileUpload } from "../utils";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../slices/apiSlice";
+import { selectCurrentToken, selectCurrentUser } from "../slices/apiSlice";
 
 function EditProfileModal({
   setToggleEditModal,
@@ -10,15 +10,16 @@ function EditProfileModal({
   setToggleEditModal: (val: boolean) => void;
 }) {
   const user  = useSelector(selectCurrentUser)
+  const token = useSelector(selectCurrentToken);
   const [username, setUsername] = useState(user.username);
   const [profileUrl, setProfileUrl] = useState(user.profile_picture_url);
   const [bio, setBio] = useState(user.bio);
   const [update] = useUpdateMutation();
 
-  const handleImageChange = async (e) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
         if(e.target.files){
-            const image_url = await handleFileUpload(e.target.files[0])
+            const image_url = await handleFileUpload(e.target.files[0], token)
             setProfileUrl(image_url?.data.filePath);
         }
     } catch (error) {
@@ -34,6 +35,7 @@ function EditProfileModal({
             profile_picture_url: profileUrl,
             bio
         })
+        setToggleEditModal(false);
     } catch (error) {
         console.log(error)
     }
@@ -48,7 +50,7 @@ function EditProfileModal({
       }}
     >
       <div
-        className="bg-chirpr-700 rounded-xl absolute inset-0 w-1/2 h-[60%] m-auto z-50"
+        className="bg-chirpr-700 rounded-xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 z-50"
         onClick={(e) => {
           e.stopPropagation();
         }}

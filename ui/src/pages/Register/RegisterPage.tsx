@@ -1,11 +1,11 @@
 import { ChangeEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { GiNestBirds } from "react-icons/gi";
-import { AccountInfoStage } from "../components/RegistrationStages/AccountInfo";
-import { DoneStage } from "../components/RegistrationStages/DoneStage";
-import { PersonalInfoStage } from "../components/RegistrationStages/PersonalInfo";
+import { AccountInfoStage } from "../../components/RegistrationStages/AccountInfo";
+import { DoneStage } from "../../components/RegistrationStages/DoneStage";
+import { PersonalInfoStage } from "../../components/RegistrationStages/PersonalInfo";
 import axios from "axios";
-import { useRegisterMutation } from "../slices/userApiSlice";
+import { useRegisterMutation } from "../../slices/userApiSlice";
 
 export interface StageInfoProps {
   formData: {

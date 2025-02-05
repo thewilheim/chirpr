@@ -20,5 +20,6 @@ namespace api.Services
         Task<User?> UpdateUser(UserUpdateDTO updatedUser);
         Task<object?> Refresh(RefreshRequest request);
         Task<int?> Logout(string email); 
+        Task<User?> Profile(string email);
     }
 }
