@@ -21,7 +21,8 @@ namespace api.Mappings
                 .ForMember(dest => dest.numberOfLikes, opt => opt.MapFrom(src => src.Likes.Count))
                 .ForMember(dest => dest.numberOfRechirps, opt => opt.MapFrom(src => src.Rechirps.Count))
                 .ForMember(dest => dest.isFollowingUser, opt => opt.MapFrom<IsFollowingResolver>())
-                .ForMember(dest => dest.hasLikedChirp, opt => opt.MapFrom<HasLikedChirpResolver>());
+                .ForMember(dest => dest.hasLikedChirp, opt => opt.MapFrom<HasLikedChirpResolver>())
+                .ForMember(dest => dest.numberOfReplies, opt => opt.MapFrom<NumberOfRepliesResolver>());
                 
             CreateMap<Conversation, ConversationDTO>()
                 .ForMember(dest => dest.other_user, opt => opt.MapFrom((src, _, _, context) =>
@@ -74,6 +75,24 @@ namespace api.Mappings
         }
     }
 
+    public class NumberOfRepliesResolver : IValueResolver<Chirp, ChirpDTO, int>
+    {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AppDbContext _context;
+
+        public NumberOfRepliesResolver(IHttpContextAccessor httpContextAccessor, AppDbContext context)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _context = context;
+        }
+
+        public int Resolve(Chirp source, ChirpDTO destination, int destMember, ResolutionContext context)
+        {
+            return _context.Chirps.Where(c => c.parent_id == source.id).Count();
+        }
+    }
+    }
+
 
     public class HasLikedChirpResolver : IValueResolver<Chirp, ChirpDTO, bool>
     {
@@ -106,4 +125,4 @@ namespace api.Mappings
             return _context.Likes.Any(l => l.user.id == user.id && l.chirp_id == source.id);
         }
     }
-}
+

@@ -20,7 +20,7 @@ import Loader from "../../components/Loader";
 function Homepage() {
   const { userInfo } = useSelector((state: RootState) => state.auth);
 
-  if(!userInfo) return <Loader />
+  if (!userInfo) return <Loader />;
   return (
     <>
       <main className="flex flex-row text-chirpr-200">
@@ -85,8 +85,8 @@ const Navigation = () => {
 };
 
 const UserProfileSnippit = () => {
-  const { userInfo:user } = useSelector((state: RootState) => state.auth);
-  console.log(user)
+  const { userInfo: user } = useSelector((state: RootState) => state.auth);
+  console.log(user);
 
   return (
     <div className="flex flex-col items-center text-center p-6">

@@ -10,7 +10,8 @@ export interface IChirp {
         "numberOfRechirps":number,
         "createdAt": string,
         "isFollowingUser": boolean,
-        "hasLikedChirp": boolean
+        "hasLikedChirp": boolean,
+        "numberOfReplies": number
 }
 
 

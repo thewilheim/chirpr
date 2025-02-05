@@ -13,5 +13,6 @@ namespace api.Models
         public int numberOfFollowing { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime createdAt { get; set; }
+
     }
 }

@@ -29,7 +29,7 @@ const router = createBrowserRouter(
         <Route path="/" element={<Homepage />}>
           <Route path="/" element={<ChirpFeed />} />
           <Route path="/chirp/:id" element={<ReplyingPage />} />
-          <Route path="/chirpr/:id" element={<ProfilePage />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/messages" element={<ConversationsPage />} />
           <Route path="/messages/:conversationId" element={<Chat />} />
         </Route>

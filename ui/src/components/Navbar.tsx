@@ -47,7 +47,7 @@ const Navbar = () => {
           <p className="my-2 font-bold">
             {userInfo.first_name + " " + userInfo.last_name}
           </p>
-          <Link to={`/chirpr/${userInfo.id}`} className="">@{userInfo.username}</Link>
+          <Link to={`/profile/${userInfo.id}`} className="">@{userInfo.username}</Link>
         </div>
 
         <nav className="font-bold">

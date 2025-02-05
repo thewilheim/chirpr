@@ -25,6 +25,7 @@ function Chirp(props: { chirpData: IChirp }) {
     media_url,
     user_id,
     hasLikedChirp,
+    numberOfReplies
   } = chirpData;
 
   const {user: userInfo} = useSelector(selectCurrentUser)
@@ -47,7 +48,7 @@ function Chirp(props: { chirpData: IChirp }) {
           <ProfilePicture profile_picture_url={user.profile_picture_url} editable={false} width={"w-14"} height={"h-14"} />
           <div className="flex flex-col ml-6 relative">
             <Link
-              to={`/chirpr/${user_id}`}
+              to={`/profile/${user.id}`}
               className="hover:text-chipr-500 dark:hover:text-chirpr-900 z-20"
               onClick={(e) => e.stopPropagation()}
             >
@@ -92,7 +93,7 @@ function Chirp(props: { chirpData: IChirp }) {
           </p>
         )}
         <p className="flex flex-row justify-center items-center align-middle">
-          <FaComment size={20} className="mr-2" /> {formatViews(numberOfRechirps)}
+          <FaComment size={20} className="mr-2" /> {formatViews(numberOfReplies)}
         </p>
       </div>
     </article>

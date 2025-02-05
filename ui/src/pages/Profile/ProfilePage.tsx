@@ -25,8 +25,7 @@ function ProfilePage() {
   );
 
   const { data: user, isLoading: loadingUser } = useGetProfileQuery(user_id);
-  const { data: chirps, isLoading: loadingChirps } =
-    useGetChirpByUserIdQuery(user_id);
+  const { data: chirps, isLoading: loadingChirps } = useGetChirpByUserIdQuery(user_id);
 
   const isSelf = userInfo ? userInfo.id === Number(user_id) : false;
   const isAuthenticated = useSelector(selectCurrentToken);
