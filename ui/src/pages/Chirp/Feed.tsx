@@ -12,7 +12,7 @@ const ChirpFeed = () => {
 
   return (
     <div className="md:p-6">
-      <div className="flex flex-row justify-between mb-5">
+      <div className="flex flex-row justify-between mb-5 px-4">
         <h1 className="text-2xl font-bold">Chirps</h1>
         <div className="flex flex-row">
           <p>Recents</p>

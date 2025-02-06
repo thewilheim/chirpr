@@ -57,8 +57,8 @@ function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
           setFile={setFile}
         />
       )}
-      <article className="relative rounded-xl p-6 mb-4 text-sm">
-      <div className="top-[30px] left-[30px] absolute w-10 h-10 rounded-full overflow-clip">
+      <article className="relative md:rounded-xl p-4 md:p-6 mb-4 text-sm border-b-2 border-b-chirpr-500/30 md:border-0">
+      <div className="top-[22px] left-[24px] md:top-[30px] md:left-[30px] absolute w-10 h-10 rounded-full overflow-clip">
             <img src={`${userInfo.profile_picture_url}`} alt="" className="object-cover w-full h-full"/>
           </div>
         <form action="" onSubmit={handleSubmit}>

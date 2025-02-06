@@ -17,30 +17,37 @@ import ProfilePicture from "../../components/ProfilePicture";
 import { logout } from "../../slices/authSlice";
 import { RootState } from "../../store";
 import Loader from "../../components/Loader";
+import { IoMdMenu } from "react-icons/io";
+import { useState } from "react";
 function Homepage() {
   const { userInfo } = useSelector((state: RootState) => state.auth);
+  const [toggleMobileDrawer, setToggleMobileDrawer] = useState(false);
 
   if (!userInfo) return <Loader />;
   return (
     <>
-      <main className="flex flex-row text-chirpr-200">
-        <section className="w-96">
-          <UserProfileSnippit />
-          <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
-          <Navigation />
-          <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
-          <Suggestions />
-        </section>
-        <section className="flex flex-row border-2 border-chirpr-200/20 rounded-3xl mx-8 w-full bg-chirpr-900/30">
-          <article className="flex flex-col border-r-2 border-chirpr-200/20 min-w-[75%]">
+      <main className="flex flex-col md:flex-row text-chirpr-200 justify-center max-w-[1440px] mx-auto">
+        <MobileHeader
+          setToggleMobileDrawer={setToggleMobileDrawer}
+          toggleMobileDrawer={toggleMobileDrawer}
+        />
+        {toggleMobileDrawer && (
+          <MobileSideBar setToggleMobileDrawer={setToggleMobileDrawer} />
+        )}
+        <DesktopSideBar />
+        <section className="flex flex-row md:border-2 md:border-chirpr-200/20 md:rounded-3xl md:mx-8 w-full md:bg-chirpr-900/30">
+          <article className="flex flex-col border-chirpr-200/20 w-full">
             <Outlet />
           </article>
-          <div className="w-full">
+        </section>
+        {/* <section>
+        <div className="w-full">
             <Messages />
             <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
             <Terms />
           </div>
-        </section>
+        </section> */}
+        <MobileFooter />
       </main>
     </>
   );
@@ -81,6 +88,80 @@ const Navigation = () => {
         </li>
       </ul>
     </nav>
+  );
+};
+
+const MobileSideBar = ({
+  setToggleMobileDrawer,
+}: {
+  setToggleMobileDrawer: (value: boolean) => void;
+}) => {
+  return (
+    <section
+      className="fixed top-0 left-0 h-screen w-screen bg-chirpr-900/80 z-50"
+      onClick={() => setToggleMobileDrawer(false)}
+    >
+      <div className="fixed top-0 left-0 h-screen p-4 overflow-y-auto z-50 bg-chirpr-800">
+        <UserProfileSnippit />
+        <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
+        <Navigation />
+        <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
+        <Suggestions />
+      </div>
+    </section>
+  );
+};
+
+const MobileFooter = () => {
+  return (
+    <section className="sticky bottom-0 w-fill h-18 z-40 bg-chirpr-800 border-t-2 border-t-chirpr-500/30 p-4 md:hidden">
+      <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center">
+          <GiNestBirds size={38} />{" "}
+          <p className="ml-2 text-2xl font-bold">Chirpr</p>
+        </div>
+        <div>
+          <button className="px-4 py-2 bg-blue-400 rounded-lg mr-4">
+            Create account
+          </button>
+          <button className="px-4 py-2 bg-chirpr-700 rounded-lg">
+            Sign in
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+const MobileHeader = ({
+  setToggleMobileDrawer,
+  toggleMobileDrawer,
+}: {
+  setToggleMobileDrawer: (value: boolean) => void;
+  toggleMobileDrawer: boolean;
+}) => {
+  return (
+    <section className="sticky top-0 w-fill z-50 bg-chirpr-800 p-4 md:hidden">
+      <div className="w-full flex flex-row items-center gap-2 sticky top-0px-3 ">
+        <IoMdMenu
+          size={34}
+          onClick={() => setToggleMobileDrawer(!toggleMobileDrawer)}
+        />
+        <GiNestBirds size={42} className="flex-1 items-center" />
+        <div className="w-11"></div>
+      </div>
+    </section>
+  );
+};
+
+const DesktopSideBar = () => {
+  return (
+    <section className="hidden md:block">
+      <UserProfileSnippit />
+      <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
+      <Navigation />
+      <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
+      <Suggestions />
+    </section>
   );
 };
 
