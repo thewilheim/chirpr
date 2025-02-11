@@ -1,11 +1,10 @@
 import { GiNestBirds } from "react-icons/gi";
 import { FaBell, FaEnvelope, FaRegNewspaper } from "react-icons/fa";
 import { formatViews } from "../../utils";
-import { MdLogout, MdSettings } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
+import { MdSettings } from "react-icons/md";
+import { useSelector } from "react-redux";
 import {
   useGetSuggestedFollowersQuery,
-  useLogoutMutation,
 } from "../../slices/userApiSlice";
 import { IUser } from "../../config/applicatonConfig";
 import { FaCircleUser } from "react-icons/fa6";
@@ -13,7 +12,6 @@ import FollowButton from "../../components/FollowButton";
 import "../../index.css";
 import { Outlet, useNavigate } from "react-router-dom";
 import ProfilePicture from "../../components/ProfilePicture";
-import { logout } from "../../slices/authSlice";
 import { RootState } from "../../store";
 import Loader from "../../components/Loader";
 import { IoMdMenu } from "react-icons/io";
@@ -25,11 +23,10 @@ function Homepage() {
 
   if (!userInfo) return <Loader />;
   return (
-    <>
-      <main className="flex text-chirpr-200">
+      <main className="flex text-chirpr-200 h-full">
         <section className="flex flex-col md:flex-row md:mx-auto w-full md:w-auto">
           <section className="sticky top-0 w-fill z-50 bg-chirpr-800 p-4 md:hidden">
-            <div className="w-full flex flex-row items-center gap-2 sticky top-0px-3 ">
+            <div className="w-full flex flex-row items-center gap-2 sticky top-0 px-3 ">
               <IoMdMenu
                 size={34}
                 onClick={() => setToggleMobileDrawer(!toggleMobileDrawer)}
@@ -50,11 +47,11 @@ function Homepage() {
             <Suggestions />
           </section>
           <section
-            className={`flex-row md:border-l md:border-r md:border-white/20 md:mx-16 md:w-[800px] ${
+            className={`flex-row md:border-l md:border-r md:border-white/20 md:mx-16 md:w-[800px] h-full ${
               toggleMobileDrawer ? "hidden" : "flex"
             }`}
           >
-            <article className="flex flex-col border-chirpr-200/20 w-full">
+            <article className="flex flex-col border-chirpr-200/20 w-full min-h-screen">
               <Outlet />
             </article>
           </section>
@@ -63,7 +60,6 @@ function Homepage() {
           ></section>
         </section>
       </main>
-    </>
   );
 }
 
@@ -138,8 +134,13 @@ const Suggestions = () => {
               >
                 <div className="flex-row flex items-center">
                   <FaCircleUser size={45} className="mr-3" />
-                  <p className="font-bold overflow-hidden text-ellipsis max-w-28 cursor-pointer" onClick={() => navigate(`/profile/${item.id}`)}>{item.username}</p>
-                </div> 
+                  <p
+                    className="font-bold overflow-hidden text-ellipsis max-w-28 cursor-pointer"
+                    onClick={() => navigate(`/profile/${item.id}`)}
+                  >
+                    {item.username}
+                  </p>
+                </div>
                 <FollowButton userToFollow={item.id} />
               </div>
             );
@@ -152,9 +153,7 @@ const Suggestions = () => {
 
 const Navigation = () => {
   const path = location.pathname;
-  const [logoutUser] = useLogoutMutation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   return (
     <nav className="my-8">
@@ -168,70 +167,34 @@ const Navigation = () => {
         </li>
         <li
           className={`li-style ${path === "/notifications" ? "li-active" : ""}`}
-          onClick={() => {navigate('/notifications')}}
+          onClick={() => {
+            navigate("/notifications");
+          }}
         >
           <FaBell className="mr-5 md:size-6 md:mr-0 2xl:mr-5" />{" "}
           <p className="md:hidden 2xl:block">Notifications</p>
         </li>
         <li
           className={`li-style ${path === "/messages" ? "li-active" : ""}`}
-          onClick={() => {navigate('/messages')}}
+          onClick={() => {
+            navigate("/messages");
+          }}
         >
           <FaEnvelope className="mr-5 md:size-6 md:mr-0 2xl:mr-5" />{" "}
           <p className="md:hidden 2xl:block">Messages</p>
         </li>
         <li
-          className={`li-style ${path === "/messages" ? "li-active" : ""}`}
-          onClick={() => {navigate('/settings')}}
+          className={`li-style ${path === "/settings" ? "li-active" : ""}`}
+          onClick={() => {
+            navigate("/settings");
+          }}
         >
           <MdSettings className="mr-5 md:size-6 md:mr-0 2xl:mr-5" />{" "}
           <p className="md:hidden 2xl:block">Settings</p>
-        </li>
-        <li
-          className="li-style text-red-700 hover:bg-red-200"
-          onClick={async () => {
-            await logoutUser("");
-            dispatch(logout());
-          }}
-        >
-          <MdLogout className="mr-5 md:size-6 md:mr-0 2xl:mr-5 " />{" "}
-          <p className="md:hidden 2xl:block">Logout</p>
         </li>
       </ul>
     </nav>
   );
 };
-// const Messages = () => {
-//   const { data: conversations, isLoading } = useGetUserConversationsQuery("");
-//   const navigate = useNavigate();
-//   if (!conversations) return <>Test</>;
-//   return (
-//     <section className="p-6">
-//       <h1 className="mb-6 text-2xl font-bold">Messages</h1>
-//       <div>
-//         {!isLoading && conversations.length > 0 ? (
-//           conversations.map((convo: IConversation) => {
-//             return (
-//               <div className="flex flex-row items-center justify-between hover:bg-chirpr-700 p-2 rounded">
-//                 <div
-//                   className="flex flex-row items-center gap-4 cursor-pointer"
-//                   onClick={() => navigate(`/messages/${convo.id}`)}
-//                 >
-//                   <FaCircleUser size={44} />
-//                   <p>{convo.other_user.username}</p>
-//                 </div>
-//                 <Link to={`/messages/${convo.id}`}>
-//                   <FaRegMessage />
-//                 </Link>
-//               </div>
-//             );
-//           })
-//         ) : (
-//           <>No Messages yet</>
-//         )}
-//       </div>
-//     </section>
-//   );
-// };
 
 export default Homepage;
