@@ -9,10 +9,12 @@ import ChirpOptionsMenu from "./ChirpOptionsMenu";
 import { useState } from "react";
 import ProfilePicture from "./ProfilePicture";
 import { useSelector } from "react-redux";
-import { selectCurrentToken, selectCurrentUser } from "../slices/apiSlice";
+import { selectCurrentToken } from "../slices/apiSlice";
+import { RootState } from "../store";
 
 function Chirp(props: { chirpData: IChirp }) {
   const authenticated = useSelector(selectCurrentToken)
+  const {userInfo} = useSelector((state:RootState) => state.auth)
 
   const { chirpData } = props;
   const {
@@ -28,7 +30,6 @@ function Chirp(props: { chirpData: IChirp }) {
     numberOfReplies
   } = chirpData;
 
-  const {user: userInfo} = useSelector(selectCurrentUser)
   const isOwnPost = userInfo ? userInfo.id === user_id : false;
 
   const navigate = useNavigate();
@@ -54,7 +55,6 @@ function Chirp(props: { chirpData: IChirp }) {
             >
               @{user.username}
             </Link>
-            {(authenticated && isOwnPost) && <p className="absolute text-xs -right-8 top-0 bg-blue-600 p-1 px-2 rounded-2xl">you</p>}
             <p className="text-sm ">{moment(createdAt).fromNow()}</p>
           </div>
         </div>

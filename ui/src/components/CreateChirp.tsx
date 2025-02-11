@@ -1,18 +1,17 @@
-import { createRef, useEffect, useState } from "react";
+import { createRef, Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FaGlobeAmericas } from "react-icons/fa";
 import { FaLocationDot, FaRegImage } from "react-icons/fa6";
 import { useCreateChirpMutation } from "../slices/chirpSlice";
 import { IChirpSend, IUser } from "../config/applicatonConfig";
 import { useSelector } from "react-redux";
-import FileUpload from "./FileUpload";
 import { handleFileUpload } from "../utils";
 import { selectCurrentToken } from "../slices/apiSlice";
+import { IoClose } from "react-icons/io5";
 
 function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
   const imageRef = createRef<HTMLImageElement>();
   const [file, setFile] = useState<File | null>(null);
   const { parent_id, userReplyingTo } = props;
-  const [showImageUpload, setShowImageUpload] = useState(false);
   const { userInfo } = useSelector(
     (state: { auth: { userInfo: IUser } }) => state.auth
   );
@@ -49,18 +48,14 @@ function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
 
   return (
     <>
-      {showImageUpload && (
-        <FileUpload
-          setShowImageUpload={setShowImageUpload}
-          showImageUpload={showImageUpload}
-          file={file}
-          setFile={setFile}
-        />
-      )}
       <article className="relative md:rounded-xl p-4 md:p-6 text-sm border-b-2 border-b-chirpr-500/30 md:border-0">
-      <div className="top-[22px] left-[24px] md:top-[30px] md:left-[30px] absolute w-10 h-10 rounded-full overflow-clip">
-            <img src={`${userInfo.profile_picture_url}`} alt="" className="object-cover w-full h-full"/>
-          </div>
+        <div className="top-[22px] left-[24px] md:top-[30px] md:left-[30px] absolute w-10 h-10 rounded-full overflow-clip">
+          <img
+            src={`${userInfo.profile_picture_url}`}
+            alt=""
+            className="object-cover w-full h-full"
+          />
+        </div>
         <form action="" onSubmit={handleSubmit}>
           <input
             type="text"
@@ -73,14 +68,25 @@ function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
             onChange={(e) => setContent(e.target.value)}
             value={content}
           />
+          {file && <PreviewImage file={file} setFile={setFile}/>}
           <div className="flex flex-row justify-between items-center mt-4">
             <div className="flex flex-row sm:justify-between w-1/4">
-              <p
+              <input
+                type="file"
+                id="custom-input"
+                hidden
+                onChange={(e) => {
+                  if(e.target.files){
+                    setFile(e.target.files[0])
+                  }
+                }}
+              />
+              <label
                 className="flex flex-row items-center cursor-pointer mr-4"
-                onClick={() => setShowImageUpload(!showImageUpload)}
+                htmlFor="custom-input"
               >
                 <FaRegImage className="mr-1" /> Media
-              </p>
+              </label>
               <p className="flex flex-row items-center cursor-pointer mr-4">
                 <FaLocationDot className="mr-1" /> Location
               </p>
@@ -98,4 +104,18 @@ function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
   );
 }
 
+const PreviewImage = ({file, setFile}:{ file:File, setFile: Dispatch<SetStateAction<File | null>>}) => {
+  return (
+    <div className="relative w-44">
+      <div className="absolute flex justify-center right-3 top-2 items-center w-6 h-6 rounded-full bg-chirpr-900" onClick={() => setFile(null)}>
+      <IoClose size={16}/>
+      </div>
+      <img
+        src={URL.createObjectURL(file)}
+        alt=""
+        className="w-44 mt-4 rounded"
+      />
+    </div>
+  );
+};
 export default CreateChirp;
