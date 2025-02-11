@@ -11,7 +11,7 @@ const ChirpFeed = () => {
   const isAuthenticted = useSelector(selectCurrentToken)
 
   return (
-    <div className="md:p-6">
+    <div className="py-8">
       <div className="flex flex-row justify-between mb-5 px-4">
         <h1 className="text-2xl font-bold">Chirps</h1>
         <div className="flex flex-row">

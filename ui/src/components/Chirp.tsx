@@ -38,7 +38,7 @@ function Chirp(props: { chirpData: IChirp }) {
 
   return (
     <article
-      className="flex justify-start flex-col md:rounded-xl dark:bg-chirpr-800 md:shadow p-4 md:p-6 mb-4 overflow-clip cursor-pointer border-b-2 border-b-chirpr-500/30"
+      className="flex justify-start flex-col dark:bg-chirpr-800 p-4 md:p-6 overflow-clip cursor-pointer border-b-2 border-b-chirpr-500/30 md:border-t-2 md:border-b-0 md:border-white/10"
       onClick={() => {
         if (pathname !== `/chirp/${chirpId}`) navigate(`/chirp/${chirpId}`);
       }}

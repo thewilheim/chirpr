@@ -20,7 +20,11 @@ export default {
           900: '#212529',
         }
 
+      },
+      screens: {
+        'md': '962px',
       }
+      
     },
   },
   plugins: []

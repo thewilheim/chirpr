@@ -18,7 +18,9 @@ import ReplyingPage from "./pages/Chirp/Reply.tsx";
 import RegisterPage from "./pages/Register/RegisterPage.tsx";
 import ProfilePage from "./pages/Profile/ProfilePage.tsx";
 import ConversationsPage from "./pages/Messages/ConversationsPage.tsx";
+import NotificationPage from "./pages/Notifications/NotificationPage.tsx";
 import { Chat } from "./components/Chat.tsx";
+import SettingsPage from "./pages/Settings/SettingsPage.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,6 +33,8 @@ const router = createBrowserRouter(
           <Route path="/chirp/:id" element={<ReplyingPage />} />
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/messages" element={<ConversationsPage />} />
+          <Route path="/notifications" element={<NotificationPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/messages/:conversationId" element={<Chat />} />
         </Route>
       </Route>

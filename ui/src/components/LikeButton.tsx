@@ -51,7 +51,7 @@ function LikeButton(props: {
       } mx-6 flex flex-row justify-center items-center align-middle min-w-24`}
       onClick={hasLikedChirp ? handleUnlikeChirp : handleLikeChirp}
     >
-          <FaHeart size={20} className="mr-2" /> {hasLikedChirp ? "Unlike" : "Likes"}{" "}
+          <FaHeart size={20} className="mr-2" /> {" "}
           {formatViews(likes)}
     </p>
   );

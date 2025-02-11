@@ -1,5 +1,5 @@
 import { GiNestBirds } from "react-icons/gi";
-import { FaEnvelope, FaRegNewspaper } from "react-icons/fa";
+import { FaBell, FaEnvelope, FaRegNewspaper } from "react-icons/fa";
 import { formatViews } from "../../utils";
 import { MdLogout, MdSettings } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,18 +7,18 @@ import {
   useGetSuggestedFollowersQuery,
   useLogoutMutation,
 } from "../../slices/userApiSlice";
-import { IConversation, IUser } from "../../config/applicatonConfig";
-import { FaCircleUser, FaRegMessage } from "react-icons/fa6";
+import { IUser } from "../../config/applicatonConfig";
+import { FaCircleUser } from "react-icons/fa6";
 import FollowButton from "../../components/FollowButton";
 import "../../index.css";
-import { useGetUserConversationsQuery } from "../../slices/messageSlice";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import ProfilePicture from "../../components/ProfilePicture";
 import { logout } from "../../slices/authSlice";
 import { RootState } from "../../store";
 import Loader from "../../components/Loader";
 import { IoMdMenu } from "react-icons/io";
 import { useState } from "react";
+
 function Homepage() {
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const [toggleMobileDrawer, setToggleMobileDrawer] = useState(false);
@@ -26,152 +26,54 @@ function Homepage() {
   if (!userInfo) return <Loader />;
   return (
     <>
-      <main className="flex flex-col md:flex-row text-chirpr-200 justify-center max-w-[1440px] mx-auto">
-        <MobileHeader
-          setToggleMobileDrawer={setToggleMobileDrawer}
-          toggleMobileDrawer={toggleMobileDrawer}
-        />
-        {toggleMobileDrawer && (
-          <MobileSideBar setToggleMobileDrawer={setToggleMobileDrawer} />
-        )}
-        <DesktopSideBar />
-        <section className="flex flex-row md:border-2 md:border-chirpr-200/20 md:rounded-3xl md:mx-8 w-full md:bg-chirpr-900/30">
-          <article className="flex flex-col border-chirpr-200/20 w-full">
-            <Outlet />
-          </article>
+      <main className="flex text-chirpr-200">
+        <section className="flex flex-col md:flex-row md:mx-auto w-full md:w-auto">
+          <section className="sticky top-0 w-fill z-50 bg-chirpr-800 p-4 md:hidden">
+            <div className="w-full flex flex-row items-center gap-2 sticky top-0px-3 ">
+              <IoMdMenu
+                size={34}
+                onClick={() => setToggleMobileDrawer(!toggleMobileDrawer)}
+              />
+              <GiNestBirds size={42} className="flex-1 items-center" />
+              <div className="w-12"></div>
+            </div>
+          </section>
+          <section
+            className={`${
+              toggleMobileDrawer ? "block" : "hidden"
+            } md:block  md:fixed md:left-0 md:p-4 md:h-full md:border-r  md:border-r-white/20 2xl:block 2xl:static 2xl:border-0 2xl:w-[300px] `}
+          >
+            <UserProfileSnippit />
+            <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded md:hidden 2xl:block" />
+            <Navigation />
+            <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded md:hidden 2xl:block" />
+            <Suggestions />
+          </section>
+          <section
+            className={`flex-row md:border-l md:border-r md:border-white/20 md:mx-16 md:w-[800px] ${
+              toggleMobileDrawer ? "hidden" : "flex"
+            }`}
+          >
+            <article className="flex flex-col border-chirpr-200/20 w-full">
+              <Outlet />
+            </article>
+          </section>
+          <section
+            className={`hidden 2xl:block 2xl:static 2xl:border-0 2xl:w-[300px]`}
+          ></section>
         </section>
-        {/* <section>
-        <div className="w-full">
-            <Messages />
-            <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
-            <Terms />
-          </div>
-        </section> */}
-        <MobileFooter />
       </main>
     </>
   );
 }
-
-const Navigation = () => {
-  const path = location.pathname;
-  const [logoutUser] = useLogoutMutation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  return (
-    <nav className="my-8">
-      <ul>
-        <li
-          className={`li-style ${path === "/" ? "li-active" : ""}`}
-          onClick={() => navigate("/")}
-        >
-          <FaRegNewspaper className="mr-5" /> Feed
-        </li>
-        <li
-          className={`li-style ${path === "/messages" ? "li-active" : ""}`}
-          onClick={() => {}}
-        >
-          <FaEnvelope className="mr-5" /> Notifications
-        </li>
-        <li className="li-style">
-          <MdSettings className="mr-5" /> Settings
-        </li>
-        <li
-          className="li-style text-red-700 hover:bg-red-200"
-          onClick={async () => {
-            await logoutUser("");
-            dispatch(logout());
-          }}
-        >
-          <MdLogout className="mr-5 " /> Logout
-        </li>
-      </ul>
-    </nav>
-  );
-};
-
-const MobileSideBar = ({
-  setToggleMobileDrawer,
-}: {
-  setToggleMobileDrawer: (value: boolean) => void;
-}) => {
-  return (
-    <section
-      className="fixed top-0 left-0 h-screen w-screen bg-chirpr-900/80 z-50"
-      onClick={() => setToggleMobileDrawer(false)}
-    >
-      <div className="fixed top-0 left-0 h-screen p-4 overflow-y-auto z-50 bg-chirpr-800">
-        <UserProfileSnippit />
-        <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
-        <Navigation />
-        <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
-        <Suggestions />
-      </div>
-    </section>
-  );
-};
-
-const MobileFooter = () => {
-  return (
-    <section className="sticky bottom-0 w-fill h-18 z-40 bg-chirpr-800 border-t-2 border-t-chirpr-500/30 p-4 md:hidden">
-      <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center">
-          <GiNestBirds size={38} />{" "}
-          <p className="ml-2 text-2xl font-bold">Chirpr</p>
-        </div>
-        <div>
-          <button className="px-4 py-2 bg-blue-400 rounded-lg mr-4">
-            Create account
-          </button>
-          <button className="px-4 py-2 bg-chirpr-700 rounded-lg">
-            Sign in
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-};
-const MobileHeader = ({
-  setToggleMobileDrawer,
-  toggleMobileDrawer,
-}: {
-  setToggleMobileDrawer: (value: boolean) => void;
-  toggleMobileDrawer: boolean;
-}) => {
-  return (
-    <section className="sticky top-0 w-fill z-50 bg-chirpr-800 p-4 md:hidden">
-      <div className="w-full flex flex-row items-center gap-2 sticky top-0px-3 ">
-        <IoMdMenu
-          size={34}
-          onClick={() => setToggleMobileDrawer(!toggleMobileDrawer)}
-        />
-        <GiNestBirds size={42} className="flex-1 items-center" />
-        <div className="w-11"></div>
-      </div>
-    </section>
-  );
-};
-
-const DesktopSideBar = () => {
-  return (
-    <section className="hidden md:block">
-      <UserProfileSnippit />
-      <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
-      <Navigation />
-      <hr className="opacity-50 border-none h-[2px] bg-chirpr-200/40 rounded" />
-      <Suggestions />
-    </section>
-  );
-};
 
 const UserProfileSnippit = () => {
   const { userInfo: user } = useSelector((state: RootState) => state.auth);
   console.log(user);
 
   return (
-    <div className="flex flex-col items-center text-center p-6">
-      <h1 className="flex flex-row items-center text-2xl  mb-12">
+    <div className="flex flex-col items-center text-center p-6 md:hidden 2xl:flex">
+      <h1 className="md:flex flex-row items-center text-2xl  mb-12 hidden">
         <GiNestBirds size={46} className="mr-2" />
         Chirpr
       </h1>
@@ -216,8 +118,9 @@ const Suggestions = () => {
   const { data: suggestedFollowers, isLoading } = useGetSuggestedFollowersQuery(
     userInfo.id
   );
+  const navigate = useNavigate();
   return (
-    <div className="my-8">
+    <div className="my-8 md:hidden 2xl:block">
       <h1 className="mb-6 text-2xl font-bold">Suggestions</h1>
       {isLoading ? (
         <>loading</>
@@ -230,13 +133,13 @@ const Suggestions = () => {
           }) => {
             return (
               <div
-                className="flex flex-row justify-between items-center align-middle mb-4"
+                className="flex flex-row justify-between items-center mb-4"
                 key={item.id}
               >
                 <div className="flex-row flex items-center">
                   <FaCircleUser size={45} className="mr-3" />
-                  <p className="font-bold">{item.username}</p>
-                </div>
+                  <p className="font-bold overflow-hidden text-ellipsis max-w-28 cursor-pointer" onClick={() => navigate(`/profile/${item.id}`)}>{item.username}</p>
+                </div> 
                 <FollowButton userToFollow={item.id} />
               </div>
             );
@@ -247,50 +150,88 @@ const Suggestions = () => {
   );
 };
 
-const Messages = () => {
-  const { data: conversations, isLoading } = useGetUserConversationsQuery("");
+const Navigation = () => {
+  const path = location.pathname;
+  const [logoutUser] = useLogoutMutation();
   const navigate = useNavigate();
-  if (!conversations) return <>Test</>;
-  return (
-    <section className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">Messages</h1>
-      <div>
-        {!isLoading && conversations.length > 0 ? (
-          conversations.map((convo: IConversation) => {
-            return (
-              <div className="flex flex-row items-center justify-between hover:bg-chirpr-700 p-2 rounded">
-                <div
-                  className="flex flex-row items-center gap-4 cursor-pointer"
-                  onClick={() => navigate(`/messages/${convo.id}`)}
-                >
-                  <FaCircleUser size={44} />
-                  <p>{convo.other_user.username}</p>
-                </div>
-                <Link to={`/messages/${convo.id}`}>
-                  <FaRegMessage />
-                </Link>
-              </div>
-            );
-          })
-        ) : (
-          <>No Messages yet</>
-        )}
-      </div>
-    </section>
-  );
-};
+  const dispatch = useDispatch();
 
-const Terms = () => {
   return (
-    <div className="flex flex-row flex-wrap justify-center gap-4 p-6 opacity-50">
-      <p>About</p>
-      <p>Accessibility</p>
-      <p>Help Center</p>
-      <p>Privacy and Terms</p>
-      <p>Advertising</p>
-      <p>Business Services</p>
-    </div>
+    <nav className="my-8">
+      <ul>
+        <li
+          className={`li-style ${path === "/" ? "li-active" : ""}`}
+          onClick={() => navigate("/")}
+        >
+          <FaRegNewspaper className="mr-5 md:size-6 md:mr-0 2xl:mr-5" />{" "}
+          <p className="md:hidden 2xl:block">Feed</p>
+        </li>
+        <li
+          className={`li-style ${path === "/notifications" ? "li-active" : ""}`}
+          onClick={() => {navigate('/notifications')}}
+        >
+          <FaBell className="mr-5 md:size-6 md:mr-0 2xl:mr-5" />{" "}
+          <p className="md:hidden 2xl:block">Notifications</p>
+        </li>
+        <li
+          className={`li-style ${path === "/messages" ? "li-active" : ""}`}
+          onClick={() => {navigate('/messages')}}
+        >
+          <FaEnvelope className="mr-5 md:size-6 md:mr-0 2xl:mr-5" />{" "}
+          <p className="md:hidden 2xl:block">Messages</p>
+        </li>
+        <li
+          className={`li-style ${path === "/messages" ? "li-active" : ""}`}
+          onClick={() => {navigate('/settings')}}
+        >
+          <MdSettings className="mr-5 md:size-6 md:mr-0 2xl:mr-5" />{" "}
+          <p className="md:hidden 2xl:block">Settings</p>
+        </li>
+        <li
+          className="li-style text-red-700 hover:bg-red-200"
+          onClick={async () => {
+            await logoutUser("");
+            dispatch(logout());
+          }}
+        >
+          <MdLogout className="mr-5 md:size-6 md:mr-0 2xl:mr-5 " />{" "}
+          <p className="md:hidden 2xl:block">Logout</p>
+        </li>
+      </ul>
+    </nav>
   );
 };
+// const Messages = () => {
+//   const { data: conversations, isLoading } = useGetUserConversationsQuery("");
+//   const navigate = useNavigate();
+//   if (!conversations) return <>Test</>;
+//   return (
+//     <section className="p-6">
+//       <h1 className="mb-6 text-2xl font-bold">Messages</h1>
+//       <div>
+//         {!isLoading && conversations.length > 0 ? (
+//           conversations.map((convo: IConversation) => {
+//             return (
+//               <div className="flex flex-row items-center justify-between hover:bg-chirpr-700 p-2 rounded">
+//                 <div
+//                   className="flex flex-row items-center gap-4 cursor-pointer"
+//                   onClick={() => navigate(`/messages/${convo.id}`)}
+//                 >
+//                   <FaCircleUser size={44} />
+//                   <p>{convo.other_user.username}</p>
+//                 </div>
+//                 <Link to={`/messages/${convo.id}`}>
+//                   <FaRegMessage />
+//                 </Link>
+//               </div>
+//             );
+//           })
+//         ) : (
+//           <>No Messages yet</>
+//         )}
+//       </div>
+//     </section>
+//   );
+// };
 
 export default Homepage;

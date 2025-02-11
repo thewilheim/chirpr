@@ -57,7 +57,7 @@ function FollowButton(props: {
             : "text-blue-400 hover:text-blue-600"
         }`}
       >
-        {followingUser ? "unfollow" : "follow"}
+        {followingUser ? "Unfollow" : "Follow"}
       </button>
   );
 }
