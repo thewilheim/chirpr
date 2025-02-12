@@ -30,8 +30,6 @@ namespace api.Controllers
         {
             var result = await _chirpService.CreateChirp(chirp);
 
-            if(result == null) return BadRequest("Unable to create chirp");
-
             return Ok(_mapper.Map<ChirpDTO>(result));
 
         }

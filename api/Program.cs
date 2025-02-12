@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using api.Data;
+using api.Handlers;
 using api.Hubs;
 using api.Mappings;
 using api.Services;
@@ -63,6 +64,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddAutoMapper(typeof(MappingProfile), typeof(Program));
     services.AddLogging();
 
+    //Exception Handling
+    services.AddExceptionHandler<GlobalExceptionHandler>();
 
     // CORS policy
     services.AddCors(options =>
@@ -124,6 +127,10 @@ async Task ConfigureMiddleware(WebApplication app)
 
         // await DataSeeder.SeedTestData(app.Services, app.Configuration);
     }
+
+
+    //Exception Handling
+    app.UseExceptionHandler();
 
     // Authentication and authorization
     app.UseAuthentication();

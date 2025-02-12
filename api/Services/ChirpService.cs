@@ -1,7 +1,9 @@
+using System.Net;
 using api.Data;
 using api.Models;
 using api.Models.Chirps;
 using api.Models.Likes;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
@@ -16,7 +18,10 @@ namespace api.Services
         }
         public async Task<Chirp> CreateChirp(Chirp chirp)
         {
-            if(string.IsNullOrEmpty(chirp.content)) return null;
+            if (string.IsNullOrEmpty(chirp.content) && string.IsNullOrEmpty(chirp.media_url))
+            {
+                throw new Exception("Unable to create chirp, no text or media content found");
+            }
 
             await _context.Chirps.AddAsync(chirp);
             await _context.SaveChangesAsync();
@@ -97,7 +102,7 @@ namespace api.Services
             return record;
         }
 
-        public async Task<Rechirp> RemoveRechirp (Rechirp rechirp)
+        public async Task<Rechirp> RemoveRechirp(Rechirp rechirp)
         {
             var record = await _context.Rechirps.FirstOrDefaultAsync(r => r.chirp_id == rechirp.chirp_id && r.user_id == rechirp.user_id);
             _context.Rechirps.Remove(record);
