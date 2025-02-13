@@ -1,4 +1,4 @@
-import { StageInfoProps } from "../../pages/RegisterPage";
+import { StageInfoProps } from "../../pages/Register/RegisterPage";
 
 export const PersonalInfoStage: React.FC<StageInfoProps> = ({ formData, handleInputChange, errors, ErrorMessage }) => {
     return (

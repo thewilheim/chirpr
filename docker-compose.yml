@@ -1,16 +1,16 @@
 services:
-  # # # ui:
-  # #   build:
-  # #     context: ./ui/
-  # #     args:
-  # #       - VITE_HOST_URL=${VITE_HOST_URL}
-  # #   environment:
-  # #       - VITE_HOST_URL=${VITE_HOST_URL}
-  # #       - NODE_ENV=development
-  # #   env_file:
-  # #     - .env
-  # #   ports:
-  # #     - 5173:5173
+  ui:
+    build:
+      context: ./ui/
+      args:
+        - VITE_HOST_URL=${VITE_HOST_URL}
+    environment:
+        - VITE_HOST_URL=${VITE_HOST_URL}
+        - NODE_ENV=development
+    env_file:
+      - .env
+    ports:
+      - 5173:5173
   server:
     build:
       context: ./api/
@@ -25,6 +25,7 @@ services:
       - Jwt__Key="test1232131231231231231223131331"
       - Jwt__Issuer="http://localhost:5042"
       - Jwt__Audience="http://localhost:5173"
+      - Jwt__TokenLifetimeMinutes=15
       - Logging__LogLevel__Default=Warning
       - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://chirpr-azure-blob-storage-1
     ports:

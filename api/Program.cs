@@ -130,7 +130,7 @@ async Task ConfigureMiddleware(WebApplication app)
 
 
     //Exception Handling
-    app.UseExceptionHandler();
+    app.UseExceptionHandler(options => { });
 
     // Authentication and authorization
     app.UseAuthentication();

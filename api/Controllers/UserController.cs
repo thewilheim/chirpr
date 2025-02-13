@@ -140,10 +140,10 @@ namespace api.Controllers
             return Ok(_mapper.Map<UserDTO>(result));
         }
 
-        [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+        [HttpGet("refresh")]
+        public async Task<IActionResult> Refresh()
         {
-            var result = await _userService.Refresh(request);
+            var result = await _userService.Refresh(GetUserEmailFromClaim());
 
             return Ok(result);
 

@@ -18,7 +18,7 @@ namespace api.Services
 
         Task<int> DeleteUser(long id);
         Task<User?> UpdateUser(UserUpdateDTO updatedUser);
-        Task<object?> Refresh(RefreshRequest request);
+        Task<object?> Refresh(string email);
         Task<int?> Logout(string email); 
         Task<User?> Profile(string email);
     }

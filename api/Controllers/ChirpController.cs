@@ -17,11 +17,14 @@ namespace api.Controllers
         private readonly IChirpsService _chirpService;
         private readonly IMapper _mapper;
 
-        public ChirpController(ILogger<ChirpController> logger, IChirpsService chirpService, IMapper mapper)
+        private readonly IBlobService _blobService;
+
+        public ChirpController(ILogger<ChirpController> logger, IChirpsService chirpService, IMapper mapper, IBlobService blobService)
         {
             _logger = logger;
             _chirpService = chirpService;
             _mapper = mapper;
+            _blobService = blobService;
         }
 
         [Authorize]
@@ -85,6 +88,14 @@ namespace api.Controllers
         public async Task<IActionResult> DeleteChirp(long id)
         {
             var chirp = await _chirpService.DeleteChirp(id);
+
+            var fileId = chirp.media_url?.Split('/').Last();
+
+            if(!string.IsNullOrEmpty(fileId))
+            {
+                await _blobService.DeleteAsync(Guid.Parse(fileId));
+            }
+
 
             if(chirp == null) return NotFound();
 

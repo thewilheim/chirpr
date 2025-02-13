@@ -79,7 +79,6 @@ export const chirpsApiSlice = apiSlice.injectEndpoints({
           method: "POST",
           body: data,
         }),
-        invalidatesTags:['Chirp'],
       }),
       unlikeChirp: builder.mutation({
         query: (data:{user_id: number, chirp_id:number}) => ({
@@ -87,7 +86,6 @@ export const chirpsApiSlice = apiSlice.injectEndpoints({
           method: "DELETE",
           body: data,
         }),
-        invalidatesTags:['Chirp'],
       })
   }),
   

@@ -5,11 +5,13 @@ import {
   FetchArgs,
 } from "@reduxjs/toolkit/query/react";
 import { logout, setCredentials } from "./authSlice";
+import { RootState } from "../store";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_HOST_URL,
   credentials: "include",
   prepareHeaders(headers, { getState }) {
+    //@ts-expect-error no error should come
     const token = getState().auth.userToken;
 
     if (token) {
@@ -27,15 +29,17 @@ const baseQueryWithReAuth = async (
 ) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status === 403) {
+  if (result?.error?.status === 401) {
     console.log("sending refresh token");
 
-    const refreshResult = await baseQuery("/refresh", api, extraOptions);
+    const refreshResult = await baseQuery("/api/v1/User/refresh", api, extraOptions);
     console.log(refreshResult);
 
     if (refreshResult.data) {
+      //@ts-expect-error no error should come
       const user = api.getState().auth.user;
       // Store data here via dispatch
+      //@ts-expect-error no error should come
       api.dispatch(setCredentials({user, accessToken: refreshResult?.data?.accessToken}))
       result = await baseQuery(args, api, extraOptions);
     } else {
@@ -53,5 +57,5 @@ export const apiSlice = createApi({
   });
 
 
-  export const selectCurrentUser = (state) => state.auth.userInfo
-  export const selectCurrentToken = (state) => state.auth.userToken
+  export const selectCurrentUser = (state: RootState) => state.auth.userInfo
+  export const selectCurrentToken = (state: RootState) => state.auth.userToken

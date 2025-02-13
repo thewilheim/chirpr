@@ -17,6 +17,7 @@ export const fetchUser = createAsyncThunk("auth/fetchUser", async (_, { getState
     });
     return response.data; // The user data
   } catch (error) {
+    //@ts-expect-error no error should come
     return rejectWithValue(error.response?.data || "Failed to fetch user");
   }
 });

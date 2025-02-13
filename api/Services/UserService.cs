@@ -107,9 +107,9 @@ namespace api.Services
             return user;
         }
 
-        public async Task<object?> Refresh(RefreshRequest request)
+        public async Task<object?> Refresh(string email)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.email == email);
             if (user == null || user.RefreshTokenExpiry < DateTime.UtcNow)
             {
                 return null;
