@@ -3,6 +3,7 @@ using api.Data;
 using api.DTOs;
 using api.Models;
 using api.Models.Conversations;
+using api.Models.Notification;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,9 @@ namespace api.Mappings
                             profile_picture_url = src.user_one.profile_picture_url
                         }
                 ));
+            
+            CreateMap<Notification, NotificationDTO>()
+                .ForMember(dest => dest.Sending_User, opt => opt.MapFrom(src => src.Sending_User));
         }
     }
 

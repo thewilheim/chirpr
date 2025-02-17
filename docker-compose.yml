@@ -14,10 +14,15 @@ services:
   server:
     build:
       context: ./api/
-      target: development
-    hostname: localhost
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./api:/app       # Mount the project into the container
+      - /app/bin         # Exclude bin to prevent build conflicts
+      - /app/obj         # Exclude obj to prevent build conflicts
     environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=1   # Enables Hot Reload in Docker
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5042
       - ASPNETCORE_HTTP_PORTS=5042
       - AppSettings__Frontend=localhost:5173
       - AppSettings__Domain=localhost
@@ -29,7 +34,7 @@ services:
       - Logging__LogLevel__Default=Warning
       - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://chirpr-azure-blob-storage-1
     ports:
-      - 5042:5042
+      - "5042:5042"
     depends_on:
       postgres:
         condition: service_healthy

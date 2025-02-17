@@ -34,7 +34,6 @@ namespace api.Services
 
             await _context.Rechirps.AddAsync(rechirp);
             await _context.SaveChangesAsync();
-
             return rechirp;
         }
 
@@ -42,11 +41,16 @@ namespace api.Services
         {
             var chirpToRemove = await _context.Chirps.FirstOrDefaultAsync(c => c.id == id);
 
+            if (chirpToRemove == null)
+            {
+                throw new Exception("Unable to find chirp");
+            }
             _context.Chirps.Remove(chirpToRemove);
 
             await _context.SaveChangesAsync();
 
             return chirpToRemove;
+
         }
 
         public async Task<IEnumerable<Chirp>> GetAllChirps()
@@ -82,7 +86,10 @@ namespace api.Services
         public async Task<Chirp> GetChirpById(long id)
         {
             var chirp = await _context.Chirps.Include(u => u.user).Include(r => r.Rechirps).Include(l => l.Likes).FirstOrDefaultAsync(c => c.id == id);
-
+            if (chirp == null)
+            {
+                throw new Exception($"Unable to find chirp with id {id}");
+            }
             return chirp;
         }
 
@@ -97,6 +104,10 @@ namespace api.Services
         public async Task<Like> UnlikeChirp(Like like)
         {
             var record = await _context.Likes.FirstOrDefaultAsync(l => l.chirp_id == like.chirp_id && l.user_id == like.user_id);
+            if (record == null)
+            {
+                throw new Exception($"Unable to findchirp with id {like.chirp_id}");
+            }
             _context.Likes.Remove(record);
             await _context.SaveChangesAsync();
             return record;
@@ -105,6 +116,10 @@ namespace api.Services
         public async Task<Rechirp> RemoveRechirp(Rechirp rechirp)
         {
             var record = await _context.Rechirps.FirstOrDefaultAsync(r => r.chirp_id == rechirp.chirp_id && r.user_id == rechirp.user_id);
+            if (record == null)
+            {
+                throw new Exception($"Unable to find rechirp with id {rechirp.chirp_id}");
+            }
             _context.Rechirps.Remove(record);
             await _context.SaveChangesAsync();
             return record;

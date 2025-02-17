@@ -4,6 +4,7 @@ using api.Models.Chirps;
 using api.Models.Likes;
 using api.Models.Message;
 using api.Models.Conversations;
+using api.Models.Notification;
 
 namespace api.Data
 {
@@ -19,6 +20,8 @@ namespace api.Data
         public required DbSet<Message> Messages { get; set; }
         public required DbSet<Conversation> Conversations { get; set; }
 
+        public required DbSet<Notification> Notifications {get;set;}
+
         // Main configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +34,19 @@ namespace api.Data
             ConfigureLike(modelBuilder);
             ConfigureMessage(modelBuilder);
             ConfigureConversation(modelBuilder);
+            ConfigureNotification(modelBuilder);
+        }
+
+        private void ConfigureNotification(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Notification>()
+                .HasKey(c => c.Id);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(c => c.Sending_User)
+                .WithMany()
+                .HasForeignKey(c => c.Sending_User_Id)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private void ConfigureUser(ModelBuilder modelBuilder)

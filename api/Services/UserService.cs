@@ -47,7 +47,7 @@ namespace api.Services
                 .FirstOrDefaultAsync(u => u.email == email);
 
             if (user == null || !BCrypt.Net.BCrypt.EnhancedVerify(password, user.password))
-                return null; // Authentication failed
+                throw new Exception("Authentication failed"); // Authentication failed
 
 
             user.RefreshToken = _tokenGenerator.GenerateRefreshToken();
@@ -71,6 +71,8 @@ namespace api.Services
                 user.Following = user.Following.Where(f => f.followerId == user.id).ToList();
             }
 
+            if (user == null) throw new Exception("Unable to find user profile");
+
             return user;
         }
 
@@ -84,6 +86,8 @@ namespace api.Services
         {
             var userToRemove = await _context.Users.FirstOrDefaultAsync(u => u.id == id);
 
+            if (userToRemove == null) throw new Exception("Unable to delete user profile");
+
             _context.Users.Remove(userToRemove);
 
             var result = await _context.SaveChangesAsync();
@@ -91,11 +95,11 @@ namespace api.Services
             return result;
         }
 
-        public async Task<User?> UpdateUser(UserUpdateDTO updatedUser)
+        public async Task<User> UpdateUser(UserUpdateDTO updatedUser)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.id == updatedUser.id);
 
-            if (user == null) return null;
+            if (user == null) throw new Exception("Unable to update user profile");
 
             user.bio = updatedUser.bio;
             user.username = updatedUser.username;
@@ -107,12 +111,12 @@ namespace api.Services
             return user;
         }
 
-        public async Task<object?> Refresh(string email)
+        public async Task<object> Refresh(string email)
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.email == email);
             if (user == null || user.RefreshTokenExpiry < DateTime.UtcNow)
             {
-                return null;
+                throw new Exception("Refresh token has expired");
             }
 
             var newAccessToken = _tokenGenerator.GenerateToken(user.email, user.id.ToString());
@@ -126,12 +130,12 @@ namespace api.Services
             return new { user, accessToken = newAccessToken };
         }
 
-        public async Task<int?> Logout(string email)
+        public async Task<int> Logout(string email)
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.email == email);
             if (user == null)
             {
-                return null;
+                throw new Exception("Unable to logout user");
             }
 
             user.RefreshToken = null;
@@ -140,14 +144,16 @@ namespace api.Services
             return 1;
         }
 
-        public async Task<User?> Profile(string email)
+        public async Task<User> Profile(string email)
         {
             var user = await _context.Users.Include(u => u.Followers).Include(u => u.Following).FirstOrDefaultAsync(u => u.email == email);
-            if(user != null){
-                return user;
+            if (user == null)
+            {
+                throw new Exception("Unable to find user profile");
             }
 
-            return null;
+            return user;
+
         }
     }
 }

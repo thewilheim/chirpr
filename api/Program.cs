@@ -9,7 +9,6 @@ using Azure.Storage.Blobs;
 using IdentityApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -58,6 +57,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddScoped<IConversationService, ConversationService>();
     services.AddScoped<TokenGenerator>();
     services.AddScoped<IBlobService, BlobService>();
+    services.AddScoped<INotificationService, NotificationService>();
 
     // Utilities
     services.AddHttpContextAccessor();

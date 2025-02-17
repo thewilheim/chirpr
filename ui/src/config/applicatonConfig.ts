@@ -60,4 +60,13 @@ export interface IConversation {
     username: string;
     profile_picture_url: string;
   };
-} 
+}
+
+export interface INotification {
+   id: string,
+   action_Type: number
+   sending_User_Id: number;
+   sending_User: IUser;
+   recieving_User_Id: number;
+   has_Viewed: boolean;
+}

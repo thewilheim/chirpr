@@ -37,7 +37,7 @@ const baseQueryWithReAuth = async (
 
     if (refreshResult.data) {
       //@ts-expect-error no error should come
-      const user = api.getState().auth.user;
+      const user = api.getState().auth.userInfo;
       // Store data here via dispatch
       //@ts-expect-error no error should come
       api.dispatch(setCredentials({user, accessToken: refreshResult?.data?.accessToken}))
@@ -52,7 +52,7 @@ const baseQueryWithReAuth = async (
 
 export const apiSlice = createApi({
     baseQuery: baseQueryWithReAuth,
-    tagTypes: ["Chirp", "User", "Replies"],
+    tagTypes: ["Chirp", "User", "Replies","Notifications"],
     endpoints: () => ({}),
   });
 

@@ -17,9 +17,9 @@ namespace api.Services
         Task<IEnumerable<User>> GetAllUsersAsync();
 
         Task<int> DeleteUser(long id);
-        Task<User?> UpdateUser(UserUpdateDTO updatedUser);
-        Task<object?> Refresh(string email);
-        Task<int?> Logout(string email); 
+        Task<User> UpdateUser(UserUpdateDTO updatedUser);
+        Task<object> Refresh(string email);
+        Task<int> Logout(string email); 
         Task<User?> Profile(string email);
     }
 }

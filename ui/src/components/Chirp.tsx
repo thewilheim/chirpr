@@ -84,6 +84,7 @@ function Chirp(props: { chirpData: IChirp }) {
             numberOfLikes={numberOfLikes}
             chirpToLike={chirpId}
             hasLikedChirp={hasLikedChirp}
+            chirpOwnerId={user_id}
           />
         ) : (
           <p className="mx-6 flex flex-row justify-center items-center align-middle min-w-24">

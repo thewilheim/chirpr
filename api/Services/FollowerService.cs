@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Data;
 using api.DTOs;
 using api.Models;
@@ -29,17 +25,17 @@ namespace api.Services
 
         public async Task<Follower> UnfollowUser(Follower follower)
         {
-            if(follower == null) return null;
+            if(follower == null) throw new Exception("Unable to find follower record");
 
             if (follower.followerId == 0 || follower.followedId == 0)
             {
-                return null;
+                throw new Exception("Unable to find follower record");
             }
 
             var record = await _context.Followers.FirstOrDefaultAsync(x => x.followerId == follower.followerId && x.followedId == follower.followedId);
             
             if(record == null){
-                return null;
+                throw new Exception("Unable to find follower record");
             }
             
             _context.Followers.Remove(record);
