@@ -2,6 +2,7 @@ using api.DTOs;
 using api.Models;
 using api.Models.Chirps;
 using api.Models.Likes;
+using api.Models.Views;
 using api.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -145,6 +146,13 @@ namespace api.Controllers
         {
             await _chirpService.RemoveRechirp(rechirp);
             return Ok(rechirp);
+        }
+
+        [HttpPost("view")]
+        public async Task<IActionResult> ViewChirp ([FromBody] View view)
+        {
+            await _chirpService.ViewChirp(view);
+            return Ok();
         }
 
 

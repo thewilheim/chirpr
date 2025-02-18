@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using api.Models.Chirps;
 using api.Models.Likes;
+using api.Models.Views;
 
 namespace api.Models
 {
@@ -22,6 +23,7 @@ namespace api.Models
         public ICollection<Rechirp>? Rechirps { get; set; }
         [JsonIgnore]
         public ICollection<Like>? Likes {get; set;}
+        public ICollection<View>? Views {get; set;}
         [JsonIgnore]
         public DateTime createdAt { get; set; }
     }

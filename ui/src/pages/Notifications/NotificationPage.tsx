@@ -19,8 +19,7 @@ function NotificationPage() {
   ]
 
   if(isLoading) return <Loader />
-
-  console.log(data)
+  
   return (
     <div className=''>
       <div className="px-4 border-b border-white/20">

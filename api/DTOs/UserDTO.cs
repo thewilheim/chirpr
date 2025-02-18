@@ -11,6 +11,7 @@ namespace api.Models
         public string? bio { get; set; }
         public int numberOfFollowers { get; set; }
         public int numberOfFollowing { get; set; }
+        public int numberOfChirps { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime createdAt { get; set; }
 

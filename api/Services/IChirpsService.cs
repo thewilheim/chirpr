@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using api.Models;
 using api.Models.Chirps;
 using api.Models.Likes;
+using api.Models.Views;
 
 namespace api.Services
 {
@@ -22,5 +23,7 @@ namespace api.Services
         Task<IEnumerable<Rechirp>> GetAllRechirpsByUser(long id);
         Task<IEnumerable<Rechirp>> GetAllRechirpsByChirpID(long id);
         Task<Rechirp> RemoveRechirp(Rechirp rechirp);
+
+        Task ViewChirp(View view);
     }
 }

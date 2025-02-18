@@ -31,13 +31,12 @@ const baseQueryWithReAuth = async (
 
   if (result?.error?.status === 401) {
     console.log("sending refresh token");
-
-    const refreshResult = await baseQuery("/api/v1/User/refresh", api, extraOptions);
+      //@ts-expect-error no error should come
+    const user = api.getState().auth.userInfo;
+    const refreshResult = await baseQuery(`/api/v1/User/refresh/${user.email}`, api, extraOptions);
     console.log(refreshResult);
 
     if (refreshResult.data) {
-      //@ts-expect-error no error should come
-      const user = api.getState().auth.userInfo;
       // Store data here via dispatch
       //@ts-expect-error no error should come
       api.dispatch(setCredentials({user, accessToken: refreshResult?.data?.accessToken}))

@@ -3,6 +3,7 @@ using api.Data;
 using api.Models;
 using api.Models.Chirps;
 using api.Models.Likes;
+using api.Models.Views;
 using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 
@@ -123,6 +124,15 @@ namespace api.Services
             _context.Rechirps.Remove(record);
             await _context.SaveChangesAsync();
             return record;
+        }
+
+        public async Task ViewChirp(View view)
+        {
+            var alreadyExists = await _context.Views.FirstOrDefaultAsync(u => u.ChirpId == view.ChirpId && u.UserId == view.UserId);
+            if(alreadyExists != null) return;
+            if (view == null) throw new Exception("Unable to read view data");
+            await _context.Views.AddAsync(view);
+            await _context.SaveChangesAsync();
         }
     }
 }

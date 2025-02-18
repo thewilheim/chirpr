@@ -11,7 +11,8 @@ export interface IChirp {
         "createdAt": string,
         "isFollowingUser": boolean,
         "hasLikedChirp": boolean,
-        "numberOfReplies": number
+        "numberOfReplies": number,
+        "numberOfViews": number
 }
 
 
@@ -33,6 +34,7 @@ export interface IUser {
         "bio": string,
         "numberOfFollowers": number,
         "numberOfFollowing": number,
+        "numberOfChirps": number,
         "createdAt": string
 }
 

@@ -65,7 +65,7 @@ function Homepage() {
 
 const UserProfileSnippit = () => {
   const { userInfo: user } = useSelector((state: RootState) => state.auth);
-  console.log(user);
+  console.log(user)
 
   return (
     <div className="flex flex-col items-center text-center p-6 md:hidden 2xl:flex">
@@ -86,7 +86,7 @@ const UserProfileSnippit = () => {
       <p className="mt-2 opacity-60">{user.bio}</p>
       <div className="flex flex-row w-full justify-between mt-6 text-sm text-chirpr-200/45 tracking-wide">
         <p>
-          <strong className="text-chirpr-200">{400}</strong> <br />
+          <strong className="text-chirpr-200">{formatViews(user.numberOfChirps)}</strong> <br />
           Chirps
         </p>
         <p>

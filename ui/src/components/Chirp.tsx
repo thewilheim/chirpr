@@ -11,10 +11,11 @@ import ProfilePicture from "./ProfilePicture";
 import { useSelector } from "react-redux";
 import { selectCurrentToken } from "../slices/apiSlice";
 import { RootState } from "../store";
+import { useViewChirpMutation } from "../slices/chirpSlice";
 
 function Chirp(props: { chirpData: IChirp }) {
   const authenticated = useSelector(selectCurrentToken)
-  const {userInfo} = useSelector((state:RootState) => state.auth)
+  const { userInfo } = useSelector((state:RootState) => state.auth)
 
   const { chirpData } = props;
   const {
@@ -22,12 +23,12 @@ function Chirp(props: { chirpData: IChirp }) {
     content,
     createdAt,
     numberOfLikes,
-    numberOfRechirps,
     user,
     media_url,
     user_id,
     hasLikedChirp,
-    numberOfReplies
+    numberOfReplies,
+    numberOfViews
   } = chirpData;
 
   const isOwnPost = userInfo ? userInfo.id === user_id : false;
@@ -36,12 +37,16 @@ function Chirp(props: { chirpData: IChirp }) {
   const location = useLocation();
   const { pathname } = location;
   const [optionsMenu, setOptionsMenu] = useState(false);
+  const [viewChirp] = useViewChirpMutation();
 
   return (
     <article
       className="flex justify-start flex-col dark:bg-chirpr-800 p-4 md:p-6 overflow-clip cursor-pointer border-b-2 border-b-chirpr-500/30 md:border-t-2 md:border-b-0 md:border-white/10"
-      onClick={() => {
-        if (pathname !== `/chirp/${chirpId}`) navigate(`/chirp/${chirpId}`);
+      onClick={async () => {
+        if (pathname !== `/chirp/${chirpId}`){
+          await viewChirp({chirpId, userId: userInfo.id})
+          navigate(`/chirp/${chirpId}`)
+        };
       }}
     >
       <div className="flex flex-row justify-between">
@@ -77,7 +82,7 @@ function Chirp(props: { chirpData: IChirp }) {
       </div>
       <div className="flex flex-row mt-6">
         <p className="flex flex-row justify-center items-center align-middle">
-          <FaEye size={20} className="mr-2" /> {formatViews(numberOfRechirps)}
+          <FaEye size={20} className="mr-2" /> {formatViews(numberOfViews)}
         </p>
         {authenticated ? (
           <LikeButton

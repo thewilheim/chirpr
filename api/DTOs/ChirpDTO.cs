@@ -18,6 +18,7 @@ namespace api.DTOs
         public int numberOfLikes { get; set; }
         public int numberOfRechirps {get; set;} 
         public int numberOfReplies { get; set; }
+        public int numberOfViews { get; set; }
         public bool isFollowingUser { get; set; }
         public bool hasLikedChirp { get; set; }
         public DateTime createdAt { get; set; }

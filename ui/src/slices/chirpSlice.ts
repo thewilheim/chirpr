@@ -79,6 +79,7 @@ export const chirpsApiSlice = apiSlice.injectEndpoints({
           method: "POST",
           body: data,
         }),
+        invalidatesTags: ["Chirp"]
       }),
       unlikeChirp: builder.mutation({
         query: (data:{user_id: number, chirp_id:number}) => ({
@@ -86,6 +87,15 @@ export const chirpsApiSlice = apiSlice.injectEndpoints({
           method: "DELETE",
           body: data,
         }),
+        invalidatesTags: ["Chirp"]
+      }),
+      viewChirp: builder.mutation({
+        query: (data:{userId: number, chirpId:number}) => ({
+          url: `${CHIRPS_URL}/view`,
+          method: "POST",
+          body: data,
+        }),
+        invalidatesTags: ["Chirp"]
       })
   }),
   
@@ -101,5 +111,6 @@ export const {
   useDeleteReplyMutation,
   useLikeChirpMutation,
   useUnlikeChirpMutation,
-  useGetChirpByUserIdQuery
+  useGetChirpByUserIdQuery,
+  useViewChirpMutation
 } = chirpsApiSlice;

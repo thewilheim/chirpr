@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using api.Data;
 using api.DTOs;
@@ -15,15 +16,17 @@ namespace api.Mappings
         {
             CreateMap<User, UserDTO>()
                 .ForMember(dest => dest.numberOfFollowers, opt => opt.MapFrom(src => src.Followers.Count))
-                .ForMember(dest => dest.numberOfFollowing, opt => opt.MapFrom(src => src.Following.Count));
-
+                .ForMember(dest => dest.numberOfFollowing, opt => opt.MapFrom(src => src.Following.Count))
+                .ForMember(dest => dest.numberOfChirps, opt => opt.MapFrom(src => src.Chirps.Count));
+                
             CreateMap<Chirp, ChirpDTO>()
                 .ForMember(dest => dest.user, opt => opt.MapFrom(src => src.user))
                 .ForMember(dest => dest.numberOfLikes, opt => opt.MapFrom(src => src.Likes.Count))
                 .ForMember(dest => dest.numberOfRechirps, opt => opt.MapFrom(src => src.Rechirps.Count))
                 .ForMember(dest => dest.isFollowingUser, opt => opt.MapFrom<IsFollowingResolver>())
                 .ForMember(dest => dest.hasLikedChirp, opt => opt.MapFrom<HasLikedChirpResolver>())
-                .ForMember(dest => dest.numberOfReplies, opt => opt.MapFrom<NumberOfRepliesResolver>());
+                .ForMember(dest => dest.numberOfReplies, opt => opt.MapFrom<NumberOfRepliesResolver>())
+                .ForMember(dest => dest.numberOfViews, opt => opt.MapFrom<NumberOfViewsResolver>());
                 
             CreateMap<Conversation, ConversationDTO>()
                 .ForMember(dest => dest.other_user, opt => opt.MapFrom((src, _, _, context) =>
@@ -93,6 +96,23 @@ namespace api.Mappings
         public int Resolve(Chirp source, ChirpDTO destination, int destMember, ResolutionContext context)
         {
             return _context.Chirps.Where(c => c.parent_id == source.id).Count();
+        }
+    }
+    public class NumberOfViewsResolver : IValueResolver<Chirp, ChirpDTO, int>
+    {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AppDbContext _context;
+
+        public NumberOfViewsResolver(IHttpContextAccessor httpContextAccessor, AppDbContext context)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _context = context;
+        }
+
+        public int Resolve(Chirp source, ChirpDTO destination, int destMember, ResolutionContext context)
+        {
+            var count = _context.Views.Where(v => v.ChirpId == source.id).Count();
+            return count;
         }
     }
     }

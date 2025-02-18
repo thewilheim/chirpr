@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Data;
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250217223045_ViewsTable")]
+    partial class ViewsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -380,9 +383,9 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Views.View", b =>
                 {
                     b.HasOne("api.Models.Chirp", "Chirp")
-                        .WithMany("Views")
+                        .WithMany()
                         .HasForeignKey("ChirpId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Chirp");
@@ -393,8 +396,6 @@ namespace api.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("Rechirps");
-
-                    b.Navigation("Views");
                 });
 
             modelBuilder.Entity("api.Models.User", b =>

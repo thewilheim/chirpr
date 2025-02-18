@@ -146,7 +146,7 @@ namespace api.Services
 
         public async Task<User> Profile(string email)
         {
-            var user = await _context.Users.Include(u => u.Followers).Include(u => u.Following).FirstOrDefaultAsync(u => u.email == email);
+            var user = await _context.Users.Include(u => u.Followers).Include(u => u.Following).Include(u => u.Chirps).FirstOrDefaultAsync(u => u.email == email);
             if (user == null)
             {
                 throw new Exception("Unable to find user profile");

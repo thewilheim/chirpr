@@ -5,6 +5,7 @@ using api.Models.Likes;
 using api.Models.Message;
 using api.Models.Conversations;
 using api.Models.Notification;
+using api.Models.Views;
 
 namespace api.Data
 {
@@ -22,6 +23,8 @@ namespace api.Data
 
         public required DbSet<Notification> Notifications {get;set;}
 
+        public required DbSet<View> Views { get; set; }
+
         // Main configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +38,7 @@ namespace api.Data
             ConfigureMessage(modelBuilder);
             ConfigureConversation(modelBuilder);
             ConfigureNotification(modelBuilder);
+            ConfigureView(modelBuilder);
         }
 
         private void ConfigureNotification(ModelBuilder modelBuilder)
@@ -47,6 +51,18 @@ namespace api.Data
                 .WithMany()
                 .HasForeignKey(c => c.Sending_User_Id)
                 .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        private void ConfigureView(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<View>()
+                .HasKey(c => new {c.ChirpId, c.UserId});
+
+            modelBuilder.Entity<View>()
+                .HasOne(f => f.Chirp)
+                .WithMany(u => u.Views)
+                .HasForeignKey(f => f.ChirpId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private void ConfigureUser(ModelBuilder modelBuilder)
