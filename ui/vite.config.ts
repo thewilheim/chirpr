@@ -14,15 +14,13 @@ export default defineConfig({
   preview: {
     port: 5173,
     strictPort: true,
-    host: true,
-    //@ts-expect-error potential issue with type checking
-    allowedHost: ["chirpr.au","www.chirpr.au"]
+    host: "0.0.0.0", // Listen on all network interfaces
   },
   server: {
     port: 5173,
     strictPort: true,
-    host: true,
-    //@ts-expect-error potential issue with type checking
-    allowedHost: ["chirp.au"]
-   },
-})
+    host: "0.0.0.0", // Ensure it binds to all IPs
+    cors: true, // Enable CORS to allow external domains
+    origin: "https://www.chirpr.au", // Explicitly allow requests from your domain
+  },
+});
