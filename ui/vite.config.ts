@@ -14,7 +14,9 @@ export default defineConfig({
   preview: {
     port: 5173,
     strictPort: true,
-    host: true
+    host: true,
+    //@ts-expect-error potential issue with type checking
+    allowedHost: ["chirp.au"]
   },
   server: {
     port: 5173,
