@@ -1,4 +1,5 @@
 /// <reference types="vitest" />
+/// <reference types="vite/client" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -13,10 +14,11 @@ export default defineConfig({
   preview: {
     port: 5173,
     strictPort: true,
+    host:'chirpr.au'
   },
   server: {
     port: 5173,
     strictPort: true,
-    host: true
+    host: 'chirpr.au'
    },
 })
