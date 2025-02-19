@@ -14,11 +14,11 @@ export default defineConfig({
   preview: {
     port: 5173,
     strictPort: true,
-    host:'chirpr.au'
+    host: true
   },
   server: {
     port: 5173,
     strictPort: true,
-    host: 'chirpr.au'
+    host: true
    },
 })
