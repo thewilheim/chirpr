@@ -1,5 +1,6 @@
 services:
   ui:
+    image: vilheim/chirpr:ui-latest
     build:
       context: ./ui/
       args:
@@ -12,32 +13,23 @@ services:
     ports:
       - 5173:5173
   server:
+    image: vilheim/chirpr:api-latest
     build:
       context: ./api/
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./api:/app       # Mount the project into the container
-      - /app/bin         # Exclude bin to prevent build conflicts
-      - /app/obj         # Exclude obj to prevent build conflicts
+      target: development
     environment:
-      - DOTNET_USE_POLLING_FILE_WATCHER=1   # Enables Hot Reload in Docker
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5042
-      - ASPNETCORE_HTTP_PORTS=5042
-      - AppSettings__Frontend=localhost:5173
-      - AppSettings__Domain=localhost
-      - ConnectionStrings__DefaultConnection=Host=chirpr-postgres-1;Port=5432;Database=chirpr-local;Username=postgres;Password=example
+      - AppSettings__Frontend=https://www.chirpr.au
+      - AppSettings__Domain=chirpr.au
+      - ConnectionStrings__DefaultConnection=Host=chirpr_postgres.1.2eqto5qtsa00hs2w88sqjnqqf;Port=5432;Database=chirpr-local;Username=postgres;Password=example
       - Jwt__Key="test1232131231231231231223131331"
-      - Jwt__Issuer="http://localhost:5042"
-      - Jwt__Audience="http://localhost:5173"
+      - Jwt__Issuer=https://api.chirpr.au
+      - Jwt__Audience=https://www.chirpr.au
       - Jwt__TokenLifetimeMinutes=15
-      - Logging__LogLevel__Default=Warning
+      - Logging__LogLevel__Default=Debug
       - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://chirpr-azure-blob-storage-1
     ports:
-      - "5042:5042"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - 5042:5042
   postgres:
     image: postgres:14
     restart: always
@@ -62,9 +54,25 @@ services:
   azure-blob-storage:
     image: mcr.microsoft.com/azure-storage/azurite:latest
     volumes:
-      - ./.containers/blob_storage/data:/data
+      - default-azurite-volume:/data mcr.microsoft.com/azure-storage/azurite
     ports:
       - "10000:10000"
     command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000 -l /data"
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /root/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - ui
+      - server
+    restart: unless-stopped
 volumes:
-  db: 
+  db:
+  default-azurite-volume:
+  caddy_data:
+  caddy_config:

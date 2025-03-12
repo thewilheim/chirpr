@@ -1,0 +1,23 @@
+{
+    email willabraham1@gmail.com
+}
+
+chirpr.au {
+    reverse_proxy ui:5173
+}
+
+api.chirpr.au {
+    reverse_proxy server:5042
+}
+
+www.chirpr.au {
+    redir https://chirpr.au{uri}
+}
+
+www.api.chirpr.au {
+    redir https://api.chirpr.au{uri}
+}
+
+202.37.74.99:80 {
+        redir https://chirpr.au{uri}
+}

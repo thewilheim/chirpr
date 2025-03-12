@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_HOST_URL;
+export const BASE_URL = 'http://202.37.74.99:5042'
 export const FOLLOWER_URL = '/api/v1/Follower'
 export const CHIRPS_URL = '/api/v1/chirp'
 export const USERS_URL = '/api/v1/User'

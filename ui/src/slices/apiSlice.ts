@@ -6,9 +6,11 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { logout, setCredentials } from "./authSlice";
 import { RootState } from "../store";
+import { BASE_URL } from "../constrants";
+
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_HOST_URL,
+  baseUrl:BASE_URL,
   credentials: "include",
   prepareHeaders(headers, { getState }) {
     //@ts-expect-error no error should come
@@ -34,7 +36,7 @@ const baseQueryWithReAuth = async (
       //@ts-expect-error no error should come
     const user = api.getState().auth.userInfo;
     const refreshResult = await baseQuery(`/api/v1/User/refresh/${user.email}`, api, extraOptions);
-    console.log(refreshResult);
+
 
     if (refreshResult.data) {
       // Store data here via dispatch
