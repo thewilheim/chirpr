@@ -33,7 +33,7 @@ export const handleFileUpload = async (file: File | null, userToken?: string ) =
     formData.append("file", file);
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/v1/Upload`,
+        `${BASE_URL}api/v1/Upload`,
         formData,
         {
           headers: {
