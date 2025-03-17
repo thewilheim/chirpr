@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL } from "../constrants";
+import { BASE_URL, IMAGE_URL } from "../constrants";
 
 export function randomDate(start = new Date(2024, 0, 1), end = new Date()) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toDateString();
@@ -33,7 +33,7 @@ export const handleFileUpload = async (file: File | null, userToken?: string ) =
     formData.append("file", file);
     try {
       const response = await axios.post(
-        `${BASE_URL}api/v1/Upload`,
+        `${BASE_URL}${IMAGE_URL}`,
         formData,
         {
           headers: {

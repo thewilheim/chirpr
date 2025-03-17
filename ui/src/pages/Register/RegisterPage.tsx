@@ -6,7 +6,7 @@ import { DoneStage } from "../../components/RegistrationStages/DoneStage";
 import { PersonalInfoStage } from "../../components/RegistrationStages/PersonalInfo";
 import axios from "axios";
 import { useRegisterMutation } from "../../slices/userApiSlice";
-import { BASE_URL } from "../../constrants";
+import { BASE_URL, IMAGE_URL } from "../../constrants";
 
 export interface StageInfoProps {
   formData: {
@@ -144,7 +144,7 @@ function RegisterPage() {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(`http://${BASE_URL}/api/v1/Upload`, formData, {
+      const response = await axios.post(`${BASE_URL}${IMAGE_URL}`, formData, {
         headers: {
           "Content-Type": "multipar/form-data",
         },
