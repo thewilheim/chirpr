@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { handleFileUpload } from "../utils";
 import { selectCurrentToken } from "../slices/apiSlice";
 import { IoClose } from "react-icons/io5";
+import ProfilePicture from "./ProfilePicture";
 
 function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
   const imageRef = createRef<HTMLImageElement>();
@@ -50,11 +51,7 @@ function CreateChirp(props: { parent_id: number; userReplyingTo?: string }) {
     <>
       <article className="relative md:rounded-xl p-4 md:p-6 text-sm border-b-2 border-b-chirpr-500/30 md:border-0">
         <div className="top-[22px] left-[24px] md:top-[30px] md:left-[30px] absolute w-10 h-10 rounded-full overflow-clip">
-          <img
-            src={`${userInfo.profile_picture_url}`}
-            alt=""
-            className="object-cover w-full h-full"
-          />
+          <ProfilePicture profile_picture_url={userInfo.profile_picture_url} editable={false} width={"w-10"} height={"h-10"} />
         </div>
         <form action="" onSubmit={handleSubmit}>
           <input
