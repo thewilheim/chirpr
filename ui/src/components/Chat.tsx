@@ -103,17 +103,19 @@ export const Chat = () => {
 
   return (
     !isLoading && (
-      <div className="flex flex-col h-full p-6">
+      <div className="flex flex-col p-6 h-screen">
       <div className='flex flex-row items-center justify-between gap-4 p-6 bg-chirpr-900 rounded-lg mb-4'>
         <div className='flex flex-row items-center gap-4'>
           <FaUserCircle size={40} />
+          <Link to={`/profile/${conversation.other_user.id}`}>
           <h1 className='text-2xl font-bold'>{conversation.other_user.username}</h1>
+          </Link>
         </div>
         <Link to='/' className='text-chirpr-500 hover:text-chirpr-600 font-bold'>
           Leave conversation
         </Link>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-scroll px-2">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -142,8 +144,13 @@ export const Chat = () => {
             type="text"
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
-            onKeyPress={handleTyping}
-            className="flex-1 p-2 border rounded"
+            onKeyDown={(e) => {
+              if(e.key === 'Enter' && !e.shiftKey){
+                return handleSendMessage();
+              }
+              handleTyping();
+            }}
+            className="flex-1 p-2 border rounded text-black"
             placeholder="Type a message..."
           />
           <button
