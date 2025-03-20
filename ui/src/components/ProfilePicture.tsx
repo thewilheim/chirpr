@@ -15,7 +15,7 @@ function ProfilePicture({
   return (
     <>
       <div
-        className={`${width} ${height} rounded-full overflow-clip mb-4 relative hover: cursor-pointer`}
+        className={`${width} ${height} rounded-full overflow-clip mb-4 relative hover:cursor-pointer`}
       >
         {!profile_picture_url ? (
           <FaCircleUser className={`cursor-pointer ${width} ${height}`} />

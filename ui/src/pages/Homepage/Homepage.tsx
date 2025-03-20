@@ -16,6 +16,7 @@ import { RootState } from "../../store";
 import Loader from "../../components/Loader";
 import { IoMdMenu } from "react-icons/io";
 import { useState } from "react";
+import Search from "../../components/Search";
 
 function Homepage() {
   const { userInfo } = useSelector((state: RootState) => state.auth);
@@ -57,7 +58,9 @@ function Homepage() {
           </section>
           <section
             className={`hidden 2xl:block 2xl:static 2xl:border-0 2xl:w-[300px]`}
-          ></section>
+          >
+            <Search />
+            </section>
         </section>
       </main>
   );

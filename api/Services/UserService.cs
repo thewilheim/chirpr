@@ -1,3 +1,4 @@
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using api.Data;
@@ -154,6 +155,19 @@ namespace api.Services
 
             return user;
 
+        }
+
+        public async Task<List<User>> Search(string query)
+        {
+            if(string.IsNullOrEmpty(query)) throw new Exception("query is empty");
+
+            Console.WriteLine(query);
+
+            var result = await _context.Users.Where(u => EF.Functions.Like(u.username.ToLower(), $"{query.ToLower()}%")).Take(5).ToListAsync();
+
+            if(result == null) throw new Exception("unable to find any users");
+
+            return result;
         }
     }
 }

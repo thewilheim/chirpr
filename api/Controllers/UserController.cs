@@ -148,6 +148,12 @@ namespace api.Controllers
             return Ok(result);
 
         }
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchForUser([FromQuery] string username)
+        {
+            var result = await _userService.Search(username);
+            return Ok(_mapper.Map<List<UserDTO>>(result));
+        }
 
     }
 }

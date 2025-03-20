@@ -21,5 +21,6 @@ namespace api.Services
         Task<object> Refresh(string email);
         Task<int> Logout(string email); 
         Task<User?> Profile(string email);
+        Task<List<User>> Search(string query); 
     }
 }
