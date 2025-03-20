@@ -163,7 +163,7 @@ namespace api.Services
 
             Console.WriteLine(query);
 
-            var result = await _context.Users.Where(u => EF.Functions.Like(u.username.ToLower(), $"{query.ToLower()}%")).ToListAsync();
+            var result = await _context.Users.Where(u => EF.Functions.Like(u.username.ToLower(), $"{query.ToLower()}%")).Take(5).ToListAsync();
 
             if(result == null) throw new Exception("unable to find any users");
 
