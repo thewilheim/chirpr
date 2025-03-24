@@ -12,18 +12,23 @@ namespace api.Storage
         {
 
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
-            
+
             BlobClient blobClient = containerClient.GetBlobClient(fileId.ToString());
-            
+
             await blobClient.DeleteIfExistsAsync();
         }
 
         public async Task<FileResponse> DownloadAsync(Guid fileId)
         {
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+
+            if (containerClient.Exists() == false)
+            {
+                await containerClient.CreateIfNotExistsAsync();
+            }
+
             BlobClient blobClient = containerClient.GetBlobClient(fileId.ToString());
             var response = await blobClient.DownloadContentAsync();
-
             return new FileResponse(response.Value.Content.ToStream(), response.Value.Details.ContentType);
         }
 
@@ -34,7 +39,7 @@ namespace api.Storage
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
             BlobClient blobClient = containerClient.GetBlobClient(fileId.ToString());
 
-            await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType});
+            await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
 
             return fileId;
 
