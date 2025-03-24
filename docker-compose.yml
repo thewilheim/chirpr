@@ -29,8 +29,8 @@ services:
       - AppSettings__Frontend=https://www.chirpr.au
       - AppSettings__Domain=chirpr.au
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=chirpr-local;Username=postgres;Password=example
-      - ConnectionStrings__BlobURL=http://azure-blob-storage:10000/devstoreaccount1/images/
-      - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azure-blob-storage:10000
+      - ConnectionStrings__BlobURL=https://azure-blob-storage:10001/devstoreaccount1/images/
+      - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=https://azure-blob-storage:10001
       - Jwt__Key="test1232131231231231231223131331"
       - Jwt__Issuer=https://api.chirpr.au
       - Jwt__Audience=https://www.chirpr.au
@@ -62,9 +62,16 @@ services:
     image: mcr.microsoft.com/azure-storage/azurite:latest
     volumes:
       - default-azurite-volume:/data
+      - /root/azurite-cert:/azurite-cert  # Mount the SSL certificate and key
     ports:
-      - "10000:10000"
-    command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000 -l /data --loose"
+      - "10000:10000"  # HTTP
+      - "10001:10001"  # HTTPS
+    environment:
+      - AZURITE_API_VERSION=1.0
+      - AZURITE_USE_SSL=true
+      - AZURITE_CERT_PATH=/azurite-cert/azurite.crt
+      - AZURITE_KEY_PATH=/azurite-cert/azurite.key
+    command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000 -l /data --loose --cert /azurite-cert/azurite.crt --key /azurite-cert/azurite.key"
 
   caddy:
     image: caddy:latest
