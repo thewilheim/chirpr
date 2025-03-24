@@ -21,7 +21,6 @@ namespace api.Storage
         public async Task<FileResponse> DownloadAsync(Guid fileId)
         {
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
-            await containerClient.CreateIfNotExistsAsync(Azure.Storage.Blobs.Models.PublicAccessType.BlobContainer);
 
             BlobClient blobClient = containerClient.GetBlobClient(fileId.ToString());
             var response = await blobClient.DownloadContentAsync();
@@ -33,6 +32,7 @@ namespace api.Storage
 
             var fileId = Guid.NewGuid();
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.BlobContainer);
             BlobClient blobClient = containerClient.GetBlobClient(fileId.ToString());
 
             await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
