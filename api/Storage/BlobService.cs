@@ -32,7 +32,8 @@ namespace api.Storage
 
             var fileId = Guid.NewGuid();
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
-            await containerClient.CreateIfNotExistsAsync(PublicAccessType.BlobContainer);
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+            await containerClient.SetAccessPolicyAsync(PublicAccessType.Blob);
             BlobClient blobClient = containerClient.GetBlobClient(fileId.ToString());
 
             await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
