@@ -24,7 +24,7 @@ services:
       - AppSettings__Frontend=https://www.chirpr.au
       - AppSettings__Domain=chirpr.au
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=chirpr-local;Username=postgres;Password=example
-      - ConnectionStrings__BlobURL=https://media.chirpr.au
+      - ConnectionStrings__BlobURL=https://media.chirpr.au/
       - Jwt__Key="test1232131231231231231223131331"
       - Jwt__Issuer=https://api.chirpr.au
       - Jwt__Audience=https://www.chirpr.au
