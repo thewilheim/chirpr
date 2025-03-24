@@ -1,42 +1,10 @@
+version: "3.8"
+
 services:
-  ui:
-    image: vilheim/chirpr:ui-latest
-    build:
-      context: ./ui/
-      args:
-        - VITE_HOST_URL=${VITE_HOST_URL}
-    environment:
-        - VITE_HOST_URL=${VITE_HOST_URL}
-        - VITE_BLOB_URL=${VITE_BLOB_URL}
-        - NODE_ENV=development
-    env_file:
-      - .env
-    ports:
-      - 5173:5173
-  server:
-    image: vilheim/chirpr:api-latest
-    build:
-      context: ./api/
-      target: development
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=5042
-      - AppSettings__Frontend=https://www.chirpr.au
-      - AppSettings__Domain=chirpr.au
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=chirpr-local;Username=postgres;Password=example
-      - ConnectionStrings__BlobURL=https://media.chirpr.au/images/
-      - Jwt__Key="test1232131231231231231223131331"
-      - Jwt__Issuer=https://api.chirpr.au
-      - Jwt__Audience=https://www.chirpr.au
-      - Jwt__TokenLifetimeMinutes=15
-      - Logging__LogLevel__Default=Debug
-      - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://10.0.1.8
-    ports:
-      - 5042:5042
   postgres:
     image: postgres:14
     restart: always
-    hostname: localhost
+    hostname: postgres
     ports:
       - 5432:5432
     environment:
@@ -49,18 +17,55 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  adminer:
-    image: adminer
-    restart: always
+
+  server:
+    image: vilheim/chirpr:api-latest
+    build:
+      context: ./api/
+      target: development
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5042
+      - AppSettings__Frontend=https://www.chirpr.au
+      - AppSettings__Domain=chirpr.au
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=chirpr-local;Username=postgres;Password=example
+      - ConnectionStrings__BlobURL=http://azure-blob-storage:10000/devstoreaccount1/images/
+      - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azure-blob-storage:10000
+      - Jwt__Key="test1232131231231231231223131331"
+      - Jwt__Issuer=https://api.chirpr.au
+      - Jwt__Audience=https://www.chirpr.au
+      - Jwt__TokenLifetimeMinutes=15
     ports:
-      - 8080:8080
+      - 5042:5042
+    depends_on:
+      - postgres
+      - azure-blob-storage
+
+  ui:
+    image: vilheim/chirpr:ui-latest
+    build:
+      context: ./ui/
+      args:
+        - VITE_HOST_URL=${VITE_HOST_URL}
+    environment:
+      - VITE_HOST_URL=${VITE_HOST_URL}
+      - VITE_BLOB_URL=${VITE_BLOB_URL}
+      - NODE_ENV=development
+    env_file:
+      - .env
+    ports:
+      - 5173:5173
+    depends_on:
+      - server
+
   azure-blob-storage:
     image: mcr.microsoft.com/azure-storage/azurite:latest
     volumes:
-      - default-azurite-volume:/data mcr.microsoft.com/azure-storage/azurite
+      - default-azurite-volume:/data
     ports:
       - "10000:10000"
-    command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000 -l /data"
+    command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000 -l /data --loose"
+
   caddy:
     image: caddy:latest
     ports:
@@ -73,7 +78,9 @@ services:
     depends_on:
       - ui
       - server
+      - azure-blob-storage
     restart: unless-stopped
+
 volumes:
   db:
   default-azurite-volume:
