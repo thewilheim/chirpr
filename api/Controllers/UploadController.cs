@@ -15,11 +15,13 @@ namespace api.Controllers
     {
         private readonly ILogger<UploadController> _logger;
         private readonly IBlobService _blobService;
+        private readonly IConfiguration _configuration;
 
-        public UploadController(ILogger<UploadController> logger, IBlobService blobService)
+        public UploadController(ILogger<UploadController> logger, IBlobService blobService, IConfiguration configuration)
         {
             _logger = logger;
             _blobService = blobService;
+            _configuration = configuration;
         }
 
         [Authorize]
@@ -53,7 +55,7 @@ namespace api.Controllers
 
             Guid fileId = await _blobService.UploadAsync(stream, file.ContentType);
 
-            var filePath = "http://localhost:10000/devstoreaccount1/images/" + fileId.ToString();
+            var filePath = _configuration.GetValue<String>("ConnectionStrings:BlobURL") + fileId.ToString();
 
             return Ok(new { FileName = file.FileName, FilePath =  filePath });
         }

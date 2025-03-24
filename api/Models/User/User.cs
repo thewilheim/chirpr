@@ -20,6 +20,7 @@ namespace api.Models
         [Required]
         public required string password { get; set; }
         public string? profile_picture_url { get; set; }
+        public string? profile_banner_url { get; set; }
         public string? bio { get; set; }
         public Privacy_Type privacy { get; set; } = Privacy_Type.Public;
 

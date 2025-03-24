@@ -105,6 +105,7 @@ namespace api.Services
             user.bio = updatedUser.bio;
             user.username = updatedUser.username;
             user.profile_picture_url = updatedUser.profile_picture_url;
+            user.profile_banner_url = updatedUser.profile_banner_url;
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();

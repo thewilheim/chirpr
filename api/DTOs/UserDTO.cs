@@ -8,6 +8,7 @@ namespace api.Models
         public string? last_name { get; set; }
         public required string email { get; set; }
         public string? profile_picture_url { get; set; }
+        public string? profile_banner_url { get; set; }
         public string? bio { get; set; }
         public int numberOfFollowers { get; set; }
         public int numberOfFollowing { get; set; }

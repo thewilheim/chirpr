@@ -31,6 +31,7 @@ export interface IUser {
         "last_name": string,
         "email": string,
         "profile_picture_url": string,
+        "profile_banner_url": string,
         "bio": string,
         "numberOfFollowers": number,
         "numberOfFollowing": number,

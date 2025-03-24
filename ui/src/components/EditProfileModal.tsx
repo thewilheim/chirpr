@@ -13,14 +13,19 @@ function EditProfileModal({
   const token = useSelector(selectCurrentToken);
   const [username, setUsername] = useState(user.username);
   const [profileUrl, setProfileUrl] = useState(user.profile_picture_url);
+  const [profileBannerUrl, setProfilBannereUrl] = useState(user.profile_banner_url);
   const [bio, setBio] = useState(user.bio);
   const [update] = useUpdateMutation();
 
-  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>, type: string) => {
     try {
         if(e.target.files){
             const image_url = await handleFileUpload(e.target.files[0], token)
-            setProfileUrl(image_url?.data.filePath);
+            if(type === 'profile_pic'){
+              setProfileUrl(image_url?.data.filePath);
+            } else {
+              setProfilBannereUrl(image_url?.data.filePath)
+            }
         }
     } catch (error) {
         console.log(error)
@@ -33,6 +38,7 @@ function EditProfileModal({
             id: user.id,
             username,
             profile_picture_url: profileUrl,
+            profile_banner_url: profileBannerUrl,
             bio
         })
         setToggleEditModal(false);
@@ -58,6 +64,7 @@ function EditProfileModal({
         <ModalHeader
           username={username || user.username}
           profile_picture_url={`${profileUrl}` || user.profile_picture_url}
+          profileBannerUrl={`${profileBannerUrl}` || user.profile_banner_url}
         />
         <form className="w-full h-full p-8" onSubmit={(e) => {
             e.preventDefault()
@@ -89,7 +96,23 @@ function EditProfileModal({
               className="p-2 rounded mx-5 w-full"
               onChange={(e) => {
                 if (e.target.files) {
-                  handleImageChange(e);
+                  handleImageChange(e,"profile_pic");
+                }
+              }}
+            />
+          </div>
+          <div className="flex flex-row justify-between items-center my-4">
+            <label htmlFor="profileBanner" className="mr-4 w-1/4">
+              Profile Banner
+            </label>
+            <input
+              type="file"
+              name="profileBanner"
+              id="profileBanner"
+              className="p-2 rounded mx-5 w-full"
+              onChange={(e) => {
+                if (e.target.files) {
+                  handleImageChange(e,"profile_banner");
                 }
               }}
             />
@@ -122,13 +145,17 @@ export default EditProfileModal;
 const ModalHeader = ({
   username,
   profile_picture_url,
+  profileBannerUrl
 }: {
   username: string;
   profile_picture_url: string;
+  profileBannerUrl: string
 }) => {
   return (
     <div>
-      <div className="h-44 w-full bg-chirpr-400 rounded-tl-2xl rounded-tr-2xl p-4"></div>
+      <div className="h-44 w-full bg-chirpr-400 rounded-tl-2xl rounded-tr-2xl p-4">
+        <img src={profileBannerUrl} alt="" className="w-full h-full"/>
+      </div>
       <div className="relative p-8">
         <div className="absolute -top-12 left-6 rounded-full bg-chirpr-800 border-2 border-chirpr-800 border-b-2 border-b-black/0 overflow-clip w-28 h-28">
           <img

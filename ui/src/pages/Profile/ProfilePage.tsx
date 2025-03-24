@@ -5,9 +5,9 @@ import { useGetChirpByUserIdQuery } from "../../slices/chirpSlice";
 import Chirp from "../../components/Chirp";
 import { useCreateConversationMutation } from "../../slices/messageSlice";
 import { useSelector } from "react-redux";
-import { IUser } from "../../config/applicatonConfig";
+import { IChirp, IUser } from "../../config/applicatonConfig";
 import FollowButton from "../../components/FollowButton";
-import { MdArrowBackIosNew} from "react-icons/md";
+import { MdArrowBackIosNew } from "react-icons/md";
 import { useState } from "react";
 import EditProfileModal from "../../components/EditProfileModal";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -16,6 +16,7 @@ import { FaEnvelope } from "react-icons/fa";
 
 function ProfilePage() {
   const { id: user_id } = useParams();
+  const [activeTab, setActiveTab] = useState("chirps");
   const [createConversation] = useCreateConversationMutation();
   const navigate = useNavigate();
   if (!user_id) throw console.error("no id found");
@@ -37,7 +38,6 @@ function ProfilePage() {
       user_one_id: 0,
       user_two_id: user?.id,
     });
-    console.log(response);
     navigate(`/messages/${response.data.id}`);
   };
 
@@ -56,10 +56,15 @@ function ProfilePage() {
           {toggleEditModal && (
             <EditProfileModal setToggleEditModal={setToggleEditModal} />
           )}
-          <div className="h-44 lg:h-72 bg-chirpr-400 p-4">
+          <div className="relative h-44 lg:h-72 bg-chirpr-400">
+            <img
+              src={user.profile_banner_url ?? ""}
+              alt=""
+              className="w-full h-full"
+            />
             <button
               onClick={() => navigate(-1)}
-              className="p-2 bg-chirpr-700 items-center rounded-full shadow shadow-chirpr-900"
+              className="absolute left-4 top-4 p-2 bg-chirpr-700 items-center rounded-full shadow shadow-chirpr-900"
             >
               <MdArrowBackIosNew />
             </button>
@@ -77,27 +82,29 @@ function ProfilePage() {
               <div className="flex flex-row items-center">
                 <h1 className="text-4xl">{user?.username}</h1>
                 <div className="flex flex-row justify-end gap-4 w-full">
-                {isSelf && isAuthenticated && (
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer"
-                    onClick={handleEditModal}
-                  >Edit Profile</button>
-                )}
-                {!isSelf && isAuthenticated && (
-                  <FollowButton
-                    userToFollow={Number(user_id)}
-                    style={"bg-blue-500 text-white px-4 py-2 rounded-lg "}
-                  />
-                )}
-                {!isSelf && isAuthenticated && (
-                  <button
-                    onClick={handleCreateConversation}
-                    className=" text-white px-4 py-2
+                  {isSelf && isAuthenticated && (
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer"
+                      onClick={handleEditModal}
+                    >
+                      Edit Profile
+                    </button>
+                  )}
+                  {!isSelf && isAuthenticated && (
+                    <FollowButton
+                      userToFollow={Number(user_id)}
+                      style={"bg-blue-500 text-white px-4 py-2 rounded-lg "}
+                    />
+                  )}
+                  {!isSelf && isAuthenticated && (
+                    <button
+                      onClick={handleCreateConversation}
+                      className=" text-white px-4 py-2
                     "
-                  >
-                    <FaEnvelope size={28}/>
-                  </button>
-                )}
+                    >
+                      <FaEnvelope size={28} />
+                    </button>
+                  )}
                 </div>
               </div>
               <p className="mb-2">@{user?.username}</p>
@@ -109,24 +116,58 @@ function ProfilePage() {
               <p className="my-2">{user?.bio}</p>
             </div>
           </div>
-          <ChirpFilters />
-          <div className="">
-            {loadingChirps ? (
-              <>loading chirps...</>
-            ) : (
-              chirps?.map((chirp) => (
-                <Chirp chirpData={{ ...chirp, user }} key={chirp.id} />
-              ))
-            )}
-          </div>
+          <ChirpFilters activeTab={activeTab} setActiveTab={setActiveTab} />
+          {!loadingChirps && (
+            <FilteredChirps activeTab={activeTab} chirps={chirps} user={user} />
+          )}
         </div>
       )}
     </>
   );
 }
 
-const ChirpFilters = () => {
-  const [activeTab, setActiveTab] = useState("chirps");
+const FilteredChirps = ({
+  activeTab,
+  chirps,
+  user,
+}: {
+  activeTab: string;
+  chirps: IChirp[] | undefined;
+  user: IUser;
+}) => {
+  switch (activeTab) {
+    case "chirps":
+      return (
+        <div className="">
+          {chirps?.map((chirp) => (
+            <Chirp chirpData={{ ...chirp, user }} key={chirp.id} />
+          ))}
+        </div>
+      );
+
+    case "media":
+      return (
+        <div className="">
+          {chirps
+            ?.filter((chirp) => chirp.media_url)
+            .map((chirp) => (
+              <Chirp chirpData={{ ...chirp, user }} key={chirp.id} />
+            ))}
+        </div>
+      );
+
+    default:
+      break;
+  }
+};
+
+const ChirpFilters = ({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: string;
+  setActiveTab: (type: string) => void;
+}) => {
   return (
     <div className="flex flex-row w-full justify-between px-4 pt-6 font-bold text-white/50 border-b border-b-white/20">
       <p
@@ -143,7 +184,9 @@ const ChirpFilters = () => {
       </p>
       <p
         onClick={() => setActiveTab("rechirps")}
-        className={`${activeTab === "rechirps" ? "activeTab" : "cursor-pointer"}`}
+        className={`${
+          activeTab === "rechirps" ? "activeTab" : "cursor-pointer"
+        }`}
       >
         Rechirps
       </p>

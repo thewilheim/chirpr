@@ -10,6 +10,7 @@ namespace api.DTOs
         public long id { get; set; }
         public string? username { get; set; }
         public string? profile_picture_url { get; set; }
+        public string? profile_banner_url { get; set; }
         public string? bio { get; set; }
         public int? privacy { get; set; }
     }
