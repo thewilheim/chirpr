@@ -1,12 +1,10 @@
-version: "3.8"
-
 services:
   postgres:
     image: postgres:14
     restart: always
     hostname: postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=chirpr-local
@@ -29,17 +27,21 @@ services:
       - AppSettings__Frontend=https://www.chirpr.au
       - AppSettings__Domain=chirpr.au
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=chirpr-local;Username=postgres;Password=example
-      - ConnectionStrings__BlobURL=https://azure-blob-storage:10001/devstoreaccount1/images/
-      - ConnectionStrings__BlobStorage=UseDevelopmentStorage=true;DevelopmentStorageProxyUri=https://azure-blob-storage:10001
-      - Jwt__Key="test1232131231231231231223131331"
+      - ConnectionStrings__MinioAccessKey=admin
+      - ConnectionStrings__MinioSecretKey=password123
+      - ConnectionStrings__MinioEndpoint=storage:9000
+      - ConnectionStrings__BlobUrl=http://localhost:9000
+      - Jwt__Key=test1232131231231231231223131331
       - Jwt__Issuer=https://api.chirpr.au
       - Jwt__Audience=https://www.chirpr.au
       - Jwt__TokenLifetimeMinutes=15
     ports:
-      - 5042:5042
+      - "5042:5042"
     depends_on:
-      - postgres
-      - azure-blob-storage
+      postgres:
+        condition: service_healthy
+      storage:
+        condition: service_healthy
 
   ui:
     image: vilheim/chirpr:ui-latest
@@ -54,24 +56,27 @@ services:
     env_file:
       - .env
     ports:
-      - 5173:5173
+      - "5173:5173"
     depends_on:
       - server
 
-  azure-blob-storage:
-    image: mcr.microsoft.com/azure-storage/azurite:latest
-    volumes:
-      - default-azurite-volume:/data
-      - /root/azurite-cert:/azurite-cert  # Mount the SSL certificate and key
+  storage:
+    image: minio/minio
+    restart: always
     ports:
-      - "10000:10000"  # HTTP
-      - "10001:10001"  # HTTPS
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - storage:/data
     environment:
-      - AZURITE_API_VERSION=1.0
-      - AZURITE_USE_SSL=true
-      - AZURITE_CERT_PATH=/azurite-cert/azurite.crt
-      - AZURITE_KEY_PATH=/azurite-cert/azurite.key
-    command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000 -l /data --loose --cert /azurite-cert/azurite.crt --key /azurite-cert/azurite.key"
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password123
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   caddy:
     image: caddy:latest
@@ -85,11 +90,10 @@ services:
     depends_on:
       - ui
       - server
-      - azure-blob-storage
     restart: unless-stopped
 
 volumes:
   db:
-  default-azurite-volume:
+  storage:
   caddy_data:
   caddy_config:
