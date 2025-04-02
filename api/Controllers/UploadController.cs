@@ -14,17 +14,14 @@ namespace api.Controllers
     public class UploadController : Controller
     {
         private readonly ILogger<UploadController> _logger;
-        private readonly IBlobService _blobService;
-        private readonly IConfiguration _configuration;
+        private readonly IFileUpload _blobService;
 
-        public UploadController(ILogger<UploadController> logger, IBlobService blobService, IConfiguration configuration)
+        public UploadController(ILogger<UploadController> logger, IFileUpload blobService)
         {
             _logger = logger;
             _blobService = blobService;
-            _configuration = configuration;
         }
 
-        [Authorize]
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> Upload(IFormFile file)
@@ -49,15 +46,9 @@ namespace api.Controllers
                 return BadRequest("File size exceeds the limit.");
             }
 
-            
+            var result = await _blobService.UploadFile(file);
 
-            using Stream stream = file.OpenReadStream();
-
-            Guid fileId = await _blobService.UploadAsync(stream, file.ContentType);
-
-            var filePath = _configuration.GetValue<String>("ConnectionStrings:BlobURL") + fileId.ToString();
-
-            return Ok(new { FileName = file.FileName, FilePath =  filePath });
+            return Ok(result);
         }
 
     }

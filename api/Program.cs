@@ -10,6 +10,7 @@ using IdentityApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Minio;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
+
+
 
 // Configure services
 ConfigureServices(builder.Services, builder.Configuration);
@@ -49,10 +52,16 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         options.ExampleFilters();
     });
 
+    services.AddMinio(configureClient => configureClient
+            .WithEndpoint(configuration.GetConnectionString("MinioEndpoint"))
+            .WithCredentials(configuration.GetConnectionString("MinioAccessKey"), configuration.GetConnectionString("MinioSecretKey"))
+            .Build());
+
     // Dependency injection
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<IChirpsService, ChirpService>();
     services.AddScoped<IFollowerService, FollowerService>();
+    services.AddScoped<IFileUpload, FileUpload>();
     services.AddScoped<IMessageService, MessageService>();
     services.AddScoped<IConversationService, ConversationService>();
     services.AddScoped<TokenGenerator>();
