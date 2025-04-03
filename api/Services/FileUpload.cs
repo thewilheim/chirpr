@@ -60,7 +60,7 @@ namespace api.Services
 
                 var fileUrl = $"{_configuration.GetConnectionString("BlobUrl")}/{_bucketName}/{key}"; // URL to access the file
 
-                return new { Message = "File uploaded successfully", FileUrl = fileUrl };
+                return new { Message = "File uploaded successfully", FilePath = fileUrl };
             }
             catch (Exception ex)
             {

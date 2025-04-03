@@ -30,7 +30,7 @@ services:
       - ConnectionStrings__MinioAccessKey=admin
       - ConnectionStrings__MinioSecretKey=password123
       - ConnectionStrings__MinioEndpoint=storage:9000
-      - ConnectionStrings__BlobUrl=http://localhost:9000
+      - ConnectionStrings__BlobUrl=https://media.chirpr.au
       - Jwt__Key=test1232131231231231231223131331
       - Jwt__Issuer=https://api.chirpr.au
       - Jwt__Audience=https://www.chirpr.au
@@ -38,10 +38,8 @@ services:
     ports:
       - "5042:5042"
     depends_on:
-      postgres:
-        condition: service_healthy
-      storage:
-        condition: service_healthy
+      - postgres
+      - storage
 
   ui:
     image: vilheim/chirpr:ui-latest
